@@ -1,6 +1,7 @@
 import { registerCoreBlocks } from '@wordpress/block-library';
 import { dispatch } from '@wordpress/data';
 import { addFilter } from '@wordpress/hooks';
+import { store as interfaceStore } from '@wordpress/interface';
 import * as blocks from '@wordpress/blocks';
 import * as data from '@wordpress/data';
 import * as element from '@wordpress/element';
@@ -17,6 +18,8 @@ export function initializeWordPress() {
   try {
     // Register all core WordPress blocks
     registerCoreBlocks();
+    
+    // The interface store is automatically registered by WordPress packages
     
     // Add custom block filters for better WordPress compatibility
     addFilter(

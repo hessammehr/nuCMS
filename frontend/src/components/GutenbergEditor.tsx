@@ -19,7 +19,8 @@ import {
 } from '@wordpress/components';
 import { 
   InterfaceSkeleton,
-  ComplementaryArea
+  ComplementaryArea,
+  store as interfaceStore
 } from '@wordpress/interface';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
@@ -44,7 +45,23 @@ function GutenbergEditor({ content, onChange, title, onTitleChange, onSave, savi
     }
   });
 
-  const [isInspectorOpen, setIsInspectorOpen] = useState(true);
+  const { enableComplementaryArea, disableComplementaryArea } = useDispatch(interfaceStore);
+  
+  const isInspectorOpen = useSelect(
+    (select) => {
+      const { getActiveComplementaryArea } = select(interfaceStore);
+      return getActiveComplementaryArea('core') === 'edit-post/block';
+    },
+    []
+  );
+
+  const toggleInspector = () => {
+    if (isInspectorOpen) {
+      disableComplementaryArea('core');
+    } else {
+      enableComplementaryArea('core', 'edit-post/block');
+    }
+  };
 
   // Editor settings that match WordPress defaults
   const editorSettings = useMemo(() => ({
@@ -150,47 +167,6 @@ function GutenbergEditor({ content, onChange, title, onTitleChange, onSave, savi
     }
   };
 
-  const toolbar = (
-    <div style={{ display: 'flex', alignItems: 'center', padding: '8px 16px', borderBottom: '1px solid #e0e0e0' }}>
-      <BlockToolbar hideDragHandle />
-      <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '8px' }}>
-        {onSave && (
-          <Button
-            variant="primary"
-            onClick={onSave}
-            disabled={saving}
-            style={{ marginRight: '8px' }}
-          >
-            {saving ? __('Saving...') : __('Save')}
-          </Button>
-        )}
-        <Button
-          icon={cog}
-          label={__('Settings')}
-          onClick={() => setIsInspectorOpen(!isInspectorOpen)}
-          isPressed={isInspectorOpen}
-        />
-      </div>
-    </div>
-  );
-
-  const sidebar = isInspectorOpen && (
-    <div style={{ width: '280px', background: '#fff', borderLeft: '1px solid #e0e0e0' }}>
-      <div style={{ padding: '16px', borderBottom: '1px solid #e0e0e0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h2 style={{ margin: 0, fontSize: '14px', fontWeight: '600' }}>Block Settings</h2>
-        <Button
-          icon={close}
-          label={__('Close Settings')}
-          onClick={() => setIsInspectorOpen(false)}
-          isSmall
-        />
-      </div>
-      <div style={{ padding: '16px', overflow: 'auto', height: 'calc(100vh - 60px)' }}>
-        <BlockInspector />
-      </div>
-    </div>
-  );
-
   return (
     <div className="gutenberg-fullscreen-editor">
       <SlotFillProvider>
@@ -201,51 +177,99 @@ function GutenbergEditor({ content, onChange, title, onTitleChange, onSave, savi
           settings={editorSettings}
         >
           <InterfaceSkeleton
-            header={toolbar}
-            sidebar={sidebar}
+            labels={{
+              header: __('Editor top bar'),
+              body: __('Editor content'),
+              sidebar: __('Editor settings'),
+              actions: __('Editor publish'),
+              footer: __('Editor footer'),
+            }}
+            header={
+              <div className="edit-post-header">
+                <div className="edit-post-header__settings">
+                  {onSave && (
+                    <Button
+                      variant="primary"
+                      onClick={onSave}
+                      disabled={saving}
+                    >
+                      {saving ? __('Saving...') : __('Save')}
+                    </Button>
+                  )}
+                  <Button
+                    icon={cog}
+                    label={__('Settings')}
+                    onClick={toggleInspector}
+                    isPressed={isInspectorOpen}
+                  />
+                </div>
+              </div>
+            }
+            sidebar={isInspectorOpen && (
+              <div style={{ width: '280px', background: '#fff', borderLeft: '1px solid #e0e0e0', height: '100%' }}>
+                <div style={{ padding: '16px', borderBottom: '1px solid #e0e0e0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <h2 style={{ margin: 0, fontSize: '13px', fontWeight: '600' }}>
+                    {__('Block Settings')}
+                  </h2>
+                  <Button
+                    icon={close}
+                    label={__('Close Settings')}
+                    onClick={toggleInspector}
+                    isSmall
+                  />
+                </div>
+                <div style={{ padding: '16px', overflow: 'auto', height: 'calc(100% - 60px)' }}>
+                  <BlockInspector />
+                </div>
+              </div>
+            )}
             content={
-              <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
-                <div style={{ height: '100%', overflow: 'auto' }}>
-                  <div style={{ maxWidth: '840px', margin: '0 auto', padding: '40px 20px' }}>
-                    {onTitleChange && (
-                      <div style={{ marginBottom: '40px' }}>
-                        <textarea
-                          value={title || ''}
-                          onChange={(e) => onTitleChange(e.target.value)}
-                          placeholder="Add title"
-                          style={{
-                            width: '100%',
-                            border: 'none',
-                            outline: 'none',
-                            background: 'transparent',
-                            resize: 'none',
-                            fontFamily: 'inherit',
-                            fontSize: '40px',
-                            fontWeight: 'bold',
-                            lineHeight: '1.2',
-                            color: '#1e1e1e',
-                            padding: '0',
-                            margin: '0',
-                            minHeight: '50px',
-                            overflow: 'hidden'
-                          }}
-                          rows={1}
-                          onInput={(e) => {
-                            const target = e.target as HTMLTextAreaElement;
-                            target.style.height = 'auto';
-                            target.style.height = target.scrollHeight + 'px';
-                          }}
-                        />
-                      </div>
-                    )}
-                    <EditorStyles styles={[]} />
-                    <BlockSelectionClearer>
-                      <WritingFlow>
-                        <ObserveTyping>
-                          <BlockList />
-                        </ObserveTyping>
-                      </WritingFlow>
-                    </BlockSelectionClearer>
+              <div className="edit-post-visual-editor">
+                <div className="edit-post-visual-editor__content-area">
+                  <div className="wp-block-editor__content">
+                    <div style={{ maxWidth: '840px', margin: '0 auto', padding: '40px 20px' }}>
+                      {onTitleChange && (
+                        <div className="edit-post-post-title" style={{ marginBottom: '40px' }}>
+                          <textarea
+                            value={title || ''}
+                            onChange={(e) => onTitleChange(e.target.value)}
+                            placeholder={__('Add title')}
+                            className="edit-post-post-title__input"
+                            style={{
+                              width: '100%',
+                              border: 'none',
+                              outline: 'none',
+                              background: 'transparent',
+                              resize: 'none',
+                              fontFamily: 'inherit',
+                              fontSize: '40px',
+                              fontWeight: 'bold',
+                              lineHeight: '1.2',
+                              color: '#1e1e1e',
+                              padding: '0',
+                              margin: '0',
+                              minHeight: '50px',
+                              overflow: 'hidden'
+                            }}
+                            rows={1}
+                            onInput={(e) => {
+                              const target = e.target as HTMLTextAreaElement;
+                              target.style.height = 'auto';
+                              target.style.height = target.scrollHeight + 'px';
+                            }}
+                          />
+                        </div>
+                      )}
+                      <EditorStyles styles={[]} />
+                      <BlockSelectionClearer className="edit-post-visual-editor__post-title-wrapper">
+                        <BlockToolbar hideDragHandle />
+                        <WritingFlow>
+                          <ObserveTyping>
+                            <BlockList className="edit-post-visual-editor__content" />
+                          </ObserveTyping>
+                        </WritingFlow>
+                      </BlockSelectionClearer>
+                    </div>
                   </div>
                 </div>
               </div>
