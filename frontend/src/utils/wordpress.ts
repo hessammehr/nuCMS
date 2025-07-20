@@ -1,5 +1,13 @@
 import { registerCoreBlocks } from '@wordpress/block-library';
 import { dispatch } from '@wordpress/data';
+import { addFilter } from '@wordpress/hooks';
+import * as blocks from '@wordpress/blocks';
+import * as data from '@wordpress/data';
+import * as element from '@wordpress/element';
+import * as components from '@wordpress/components';
+import * as blockEditor from '@wordpress/block-editor';
+import * as i18n from '@wordpress/i18n';
+import * as hooks from '@wordpress/hooks';
 
 let isInitialized = false;
 
@@ -10,35 +18,45 @@ export function initializeWordPress() {
     // Register all core WordPress blocks
     registerCoreBlocks();
     
-    // Configure the block editor settings
-    const editorSettings = {
-      alignWide: true,
-      supportsLayout: true,
-      colors: [
-        { name: 'White', slug: 'white', color: '#ffffff' },
-        { name: 'Black', slug: 'black', color: '#000000' },
-        { name: 'Gray', slug: 'gray', color: '#6b7280' },
-        { name: 'Blue', slug: 'blue', color: '#3b82f6' },
-        { name: 'Green', slug: 'green', color: '#10b981' },
-        { name: 'Red', slug: 'red', color: '#ef4444' },
-      ],
-      fontSizes: [
-        { name: 'Small', slug: 'small', size: '14px' },
-        { name: 'Medium', slug: 'medium', size: '16px' },
-        { name: 'Large', slug: 'large', size: '20px' },
-        { name: 'Extra Large', slug: 'x-large', size: '24px' },
-      ],
-      enableCustomColors: true,
-      enableCustomFontSizes: true,
-    };
+    // Add custom block filters for better WordPress compatibility
+    addFilter(
+      'blocks.registerBlockType',
+      'nucms/enhance-blocks',
+      (settings: any, name: string) => {
+        // Enhance block settings for better compatibility
+        if (name.startsWith('core/')) {
+          return {
+            ...settings,
+            // Enable all WordPress features
+            supports: {
+              ...settings.supports,
+              anchor: true,
+              className: true,
+              customClassName: true,
+              html: false,
+            },
+          };
+        }
+        return settings;
+      }
+    );
 
-    // Initialize the block editor store with settings
-    if (dispatch('core/block-editor')) {
-      dispatch('core/block-editor').updateSettings(editorSettings);
+    // Set up global WordPress-like behavior
+    if (typeof window !== 'undefined') {
+      // Add WordPress globals that some blocks might expect
+      (window as any).wp = {
+        blocks,
+        data,
+        element,
+        components,
+        blockEditor,
+        i18n,
+        hooks,
+      };
     }
 
     isInitialized = true;
-    console.log('✅ WordPress utilities initialized with Gutenberg blocks');
+    console.log('✅ WordPress utilities initialized with Gutenberg blocks and enhanced compatibility');
   } catch (error) {
     console.error('❌ Failed to initialize WordPress utilities:', error);
   }
