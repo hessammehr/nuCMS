@@ -50,7 +50,7 @@ setup: install ## Set up development environment
 	@cd backend && npm run setup
 
 logs: ## Show development logs
-	@tail -f dev.log
+	@tail dev.log
 
 kill-dev: ## Kill any running development processes
 	@pkill -f "uvicorn main:app" || true
