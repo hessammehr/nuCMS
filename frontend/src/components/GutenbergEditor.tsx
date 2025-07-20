@@ -146,18 +146,24 @@ function GutenbergEditor({ content, onChange, title, onTitleChange, onSave, savi
     },
   }), []);
 
+  const isInternalUpdate = useRef(false);
+  
   useEffect(() => {
-    try {
-      const parsedBlocks = content ? parse(content) : [];
-      setBlocks(parsedBlocks);
-    } catch (error) {
-      console.warn('Failed to parse content as blocks:', error);
-      setBlocks([]);
+    if (!isInternalUpdate.current) {
+      try {
+        const parsedBlocks = content ? parse(content) : [];
+        setBlocks(parsedBlocks);
+      } catch (error) {
+        console.warn('Failed to parse content as blocks:', error);
+        setBlocks([]);
+      }
     }
+    isInternalUpdate.current = false;
   }, [content]);
 
   const updateBlocks = (newBlocks: any[]) => {
     setBlocks(newBlocks);
+    isInternalUpdate.current = true;
     try {
       const serializedContent = serialize(newBlocks);
       onChange(serializedContent);
