@@ -3,6 +3,7 @@
 
 /* Import WordPress Package Styles */
 @import '@wordpress/components/build-style/style.css';
+@import '@wordpress/interface/build-style/style.css';
 @import '@wordpress/block-editor/build-style/style.css';
 @import '@wordpress/block-editor/build-style/content.css';
 @import '@wordpress/block-library/build-style/style.css';
@@ -64,16 +65,59 @@ body {
   background-color: #ffffff;
 }
 
-/* WordPress Block Editor Styles */
-.block-editor-writing-flow {
-  padding: 20px;
+/* WordPress Block Editor Styles - Enhanced for proper layout */
+.interface-interface-skeleton__content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
-.wp-block {
-  max-width: 650px;
-  margin-left: auto;
-  margin-right: auto;
+.edit-post-visual-editor {
+  flex: 1;
+  overflow: hidden;
 }
+
+.edit-post-visual-editor__content-area {
+  height: 100%;
+  overflow-y: auto;
+}
+
+.edit-post-visual-editor__post-title-wrapper {
+  max-width: 650px;
+  margin: 0 auto;
+  padding: 28px 32px 0;
+}
+
+.block-editor-writing-flow {
+  padding: 0 32px 50vh;
+}
+
+/* Post title styling following WordPress conventions */
+.edit-post-post-title {
+  margin-bottom: 32px;
+}
+
+.edit-post-post-title__input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  resize: none;
+  font-family: inherit;
+  font-size: 2.5em;
+  font-weight: bold;
+  line-height: 1.2;
+  color: #1e1e1e;
+  padding: 0;
+  margin: 0;
+  min-height: 1.2em;
+  overflow: hidden;
+}
+
+.edit-post-post-title__input::placeholder {
+  color: #757575;
+}
+
 
 /* Core block styles */
 .wp-block-paragraph {

@@ -19,7 +19,6 @@ import {
 } from '@wordpress/components';
 import { 
   InterfaceSkeleton,
-  ComplementaryArea,
   store as interfaceStore
 } from '@wordpress/interface';
 import { useSelect, useDispatch } from '@wordpress/data';
@@ -184,6 +183,7 @@ function GutenbergEditor({ content, onChange, title, onTitleChange, onSave, savi
               actions: __('Editor publish'),
               footer: __('Editor footer'),
             }}
+            enableRegionNavigation={false}
             header={
               <div className="edit-post-header">
                 <div className="edit-post-header__settings">
@@ -205,52 +205,19 @@ function GutenbergEditor({ content, onChange, title, onTitleChange, onSave, savi
                 </div>
               </div>
             }
-            sidebar={isInspectorOpen && (
-              <div style={{ width: '280px', background: '#fff', borderLeft: '1px solid #e0e0e0', height: '100%' }}>
-                <div style={{ padding: '16px', borderBottom: '1px solid #e0e0e0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <h2 style={{ margin: 0, fontSize: '13px', fontWeight: '600' }}>
-                    {__('Block Settings')}
-                  </h2>
-                  <Button
-                    icon={close}
-                    label={__('Close Settings')}
-                    onClick={toggleInspector}
-                    isSmall
-                  />
-                </div>
-                <div style={{ padding: '16px', overflow: 'auto', height: 'calc(100% - 60px)' }}>
-                  <BlockInspector />
-                </div>
-              </div>
-            )}
+            sidebar={isInspectorOpen && <BlockInspector />}
             content={
-              <div className="edit-post-visual-editor">
-                <div className="edit-post-visual-editor__content-area">
-                  <div className="wp-block-editor__content">
-                    <div style={{ maxWidth: '840px', margin: '0 auto', padding: '40px 20px' }}>
+              <div className="interface-interface-skeleton__content">
+                <div className="edit-post-visual-editor">
+                  <div className="edit-post-visual-editor__content-area">
+                    <div className="edit-post-visual-editor__post-title-wrapper">
                       {onTitleChange && (
-                        <div className="edit-post-post-title" style={{ marginBottom: '40px' }}>
+                        <div className="edit-post-post-title">
                           <textarea
                             value={title || ''}
                             onChange={(e) => onTitleChange(e.target.value)}
                             placeholder={__('Add title')}
                             className="edit-post-post-title__input"
-                            style={{
-                              width: '100%',
-                              border: 'none',
-                              outline: 'none',
-                              background: 'transparent',
-                              resize: 'none',
-                              fontFamily: 'inherit',
-                              fontSize: '40px',
-                              fontWeight: 'bold',
-                              lineHeight: '1.2',
-                              color: '#1e1e1e',
-                              padding: '0',
-                              margin: '0',
-                              minHeight: '50px',
-                              overflow: 'hidden'
-                            }}
                             rows={1}
                             onInput={(e) => {
                               const target = e.target as HTMLTextAreaElement;
@@ -261,11 +228,11 @@ function GutenbergEditor({ content, onChange, title, onTitleChange, onSave, savi
                         </div>
                       )}
                       <EditorStyles styles={[]} />
-                      <BlockSelectionClearer className="edit-post-visual-editor__post-title-wrapper">
+                      <BlockSelectionClearer className="block-editor-writing-flow">
                         <BlockToolbar hideDragHandle />
                         <WritingFlow>
                           <ObserveTyping>
-                            <BlockList className="edit-post-visual-editor__content" />
+                            <BlockList />
                           </ObserveTyping>
                         </WritingFlow>
                       </BlockSelectionClearer>
