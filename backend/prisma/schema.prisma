@@ -1,0 +1,78 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  username  String   @unique
+  password  String
+  role      String   @default("EDITOR") // ADMIN, EDITOR, AUTHOR
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  posts     Post[]
+  pages     Page[]
+  media     Media[]
+
+  @@map("users")
+}
+
+model Post {
+  id          Int       @id @default(autoincrement())
+  title       String
+  slug        String    @unique
+  content     String    // JSON string of Gutenberg blocks
+  excerpt     String?
+  status      String    @default("DRAFT") // DRAFT, PUBLISHED, PRIVATE
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  authorId    Int
+
+  author      User      @relation(fields: [authorId], references: [id])
+
+  @@map("posts")
+}
+
+model Page {
+  id        Int      @id @default(autoincrement())
+  title     String
+  slug      String   @unique
+  content   String   // JSON string of Gutenberg blocks
+  status    String   @default("DRAFT") // DRAFT, PUBLISHED, PRIVATE
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  authorId  Int
+
+  author    User     @relation(fields: [authorId], references: [id])
+
+  @@map("pages")
+}
+
+model Media {
+  id        Int      @id @default(autoincrement())
+  filename  String
+  originalName String
+  mimeType  String
+  size      Int
+  url       String
+  alt       String?
+  caption   String?
+  createdAt DateTime @default(now())
+  authorId  Int
+
+  author    User     @relation(fields: [authorId], references: [id])
+
+  @@map("media")
+}
+
+
