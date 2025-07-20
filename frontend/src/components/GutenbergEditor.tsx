@@ -15,7 +15,9 @@ import {
 import { 
   Popover, 
   SlotFillProvider,
-  Button
+  Button,
+  ToolbarGroup,
+  ToolbarButton
 } from '@wordpress/components';
 import { 
   InterfaceSkeleton,
@@ -23,7 +25,7 @@ import {
 } from '@wordpress/interface';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
-import { cog, close } from '@wordpress/icons';
+import { cog, close, undo as undoIcon, redo as redoIcon } from '@wordpress/icons';
 
 interface GutenbergEditorProps {
   content: string;
@@ -53,6 +55,30 @@ function GutenbergEditor({ content, onChange, title, onTitleChange, onSave, savi
     },
     []
   );
+
+  // Undo/Redo functionality
+  const { hasUndo, hasRedo } = useSelect(
+    (select) => {
+      // Try block-editor store first, fallback to core
+      const blockEditorSelect = select('core/block-editor');
+      if (blockEditorSelect && blockEditorSelect.hasUndo && blockEditorSelect.hasRedo) {
+        return {
+          hasUndo: blockEditorSelect.hasUndo(),
+          hasRedo: blockEditorSelect.hasRedo()
+        };
+      }
+      // Fallback to core store
+      const coreSelect = select('core');
+      return {
+        hasUndo: coreSelect.hasUndo ? coreSelect.hasUndo() : false,
+        hasRedo: coreSelect.hasRedo ? coreSelect.hasRedo() : false
+      };
+    },
+    []
+  );
+
+  const { undo, redo } = useDispatch('core/block-editor');
+
 
   const toggleInspector = () => {
     if (isInspectorOpen) {
@@ -192,6 +218,24 @@ function GutenbergEditor({ content, onChange, title, onTitleChange, onSave, savi
             enableRegionNavigation={false}
             header={
               <div className="edit-post-header">
+                <div className="edit-post-header__toolbar">
+                  <ToolbarGroup>
+                    <ToolbarButton
+                      icon={undoIcon}
+                      label={__('Undo')}
+                      shortcut="Ctrl+Z"
+                      onClick={() => undo && undo()}
+                      disabled={!hasUndo}
+                    />
+                    <ToolbarButton
+                      icon={redoIcon}
+                      label={__('Redo')}
+                      shortcut="Ctrl+Y"
+                      onClick={() => redo && redo()}
+                      disabled={!hasRedo}
+                    />
+                  </ToolbarGroup>
+                </div>
                 <div className="edit-post-header__settings">
                   {onSave && (
                     <Button
