@@ -33,3 +33,4 @@ Analyze the current repository state and make incremental progress on the nuCMS 
 - Remember you can attach screenshots to issues or pull requests using the `gh` CLI, much better than lots of random screenshots littering the repository.
 - Be mindful that you are running with `--dangerously-skip-permissions`, so you should not perform any actions that could harm the system or data integrity.
 - Clean up your old playwright screenshots at the end of each session if they are not needed anymore.
+- If the working directory is dirty, this may be because the previous session did not end cleanly, so check if you can detect what task was being tackled and continue from there.
