@@ -12,11 +12,17 @@
     "db:migrate": "prisma migrate dev",
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
-    "lint": "echo 'Linting not configured'",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
     "format": "echo 'Formatting not configured'",
     "test": "echo 'Tests not configured'"
   },
-  "keywords": ["cms", "gutenberg", "typescript", "fastify"],
+  "keywords": [
+    "cms",
+    "gutenberg",
+    "typescript",
+    "fastify"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
@@ -35,6 +41,9 @@
     "@types/bcryptjs": "^2.4.6",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^22.5.0",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^5.62.0",
+    "eslint": "^8.57.1",
     "pino-pretty": "^10.2.0",
     "prisma": "^5.19.0",
     "tsx": "^4.17.0",

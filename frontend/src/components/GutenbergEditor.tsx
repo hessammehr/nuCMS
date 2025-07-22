@@ -49,7 +49,7 @@ function GutenbergEditor({ content, onChange, title, onTitleChange, onSave, savi
   const { enableComplementaryArea, disableComplementaryArea } = useDispatch(interfaceStore);
   
   const isInspectorOpen = useSelect(
-    (select) => {
+    (select: any) => {
       const { getActiveComplementaryArea } = select(interfaceStore);
       return getActiveComplementaryArea('core') === 'edit-post/block';
     },
@@ -58,7 +58,7 @@ function GutenbergEditor({ content, onChange, title, onTitleChange, onSave, savi
 
   // Undo/Redo functionality
   const { hasUndo, hasRedo } = useSelect(
-    (select) => {
+    (select: any) => {
       // Try block-editor store first, fallback to core
       const blockEditorSelect = select('core/block-editor');
       if (blockEditorSelect && blockEditorSelect.hasUndo && blockEditorSelect.hasRedo) {

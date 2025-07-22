@@ -14,9 +14,9 @@ export interface Post {
   title: string;
   slug: string;
   content: string; // JSON string of Gutenberg blocks
-  excerpt?: string;
+  excerpt?: string | null;
   status: 'DRAFT' | 'PUBLISHED' | 'PRIVATE';
-  publishedAt?: Date;
+  publishedAt?: Date | null;
   createdAt: Date;
   updatedAt: Date;
   authorId: number;

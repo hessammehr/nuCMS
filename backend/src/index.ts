@@ -4,6 +4,7 @@ import jwt from '@fastify/jwt';
 import multipart from '@fastify/multipart';
 import staticFiles from '@fastify/static';
 import path from 'path';
+import './types';
 import { authRoutes } from './routes/auth';
 import { postRoutes } from './routes/posts';
 import { pageRoutes } from './routes/pages';

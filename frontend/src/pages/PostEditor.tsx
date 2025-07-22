@@ -109,14 +109,102 @@ function PostEditor() {
   };
 
   return (
-    <GutenbergEditor
-      content={post.content || ''}
-      onChange={(content) => setPost(prev => ({ ...prev, content }))}
-      title={post.title || ''}
-      onTitleChange={handleTitleChange}
-      onSave={handleSaveQuick}
-      saving={saving}
-    />
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+        <h1>{isEditing ? 'Edit Post' : 'Create New Post'}</h1>
+        <button 
+          onClick={() => navigate('/posts')}
+          className="btn btn-secondary"
+        >
+          Back to Posts
+        </button>
+      </div>
+
+      {error && (
+        <div className="error-message" style={{ marginBottom: '1rem' }}>
+          {error}
+        </div>
+      )}
+
+      {success && (
+        <div className="success-message" style={{ marginBottom: '1rem' }}>
+          {success}
+        </div>
+      )}
+
+      <div className="editor-container">
+        <div className="editor-header">
+          <input
+            type="text"
+            placeholder="Post title"
+            value={post.title || ''}
+            onChange={(e) => handleTitleChange(e.target.value)}
+            disabled={saving}
+          />
+
+          <div className="editor-meta">
+            <div style={{ flex: 1 }}>
+              <label>Slug:</label>
+              <input
+                type="text"
+                value={post.slug || ''}
+                onChange={(e) => setPost(prev => ({ ...prev, slug: e.target.value }))}
+                disabled={saving}
+                style={{ width: '100%' }}
+              />
+            </div>
+            
+            <div style={{ flex: 1, marginLeft: '1rem' }}>
+              <label>Excerpt:</label>
+              <input
+                type="text"
+                value={post.excerpt || ''}
+                onChange={(e) => setPost(prev => ({ ...prev, excerpt: e.target.value }))}
+                disabled={saving}
+                style={{ width: '100%' }}
+              />
+            </div>
+            
+            <div>
+              <label>Status:</label>
+              <select
+                value={post.status || 'DRAFT'}
+                onChange={(e) => setPost(prev => ({ ...prev, status: e.target.value as any }))}
+                disabled={saving}
+              >
+                <option value="DRAFT">Draft</option>
+                <option value="PUBLISHED">Published</option>
+                <option value="PRIVATE">Private</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="editor-actions">
+            <button 
+              onClick={() => handleSave('DRAFT')}
+              disabled={saving}
+              className="btn btn-secondary"
+            >
+              {saving ? 'Saving...' : 'Save Draft'}
+            </button>
+            <button 
+              onClick={() => handleSave('PUBLISHED')}
+              disabled={saving}
+              className="btn"
+            >
+              {saving ? 'Publishing...' : 'Publish'}
+            </button>
+          </div>
+        </div>
+
+        <div className="editor-content">
+          <GutenbergEditor
+            content={post.content || ''}
+            onChange={(content) => setPost(prev => ({ ...prev, content }))}
+          />
+        </div>
+      </div>
+    </div>
   );
 }
 
