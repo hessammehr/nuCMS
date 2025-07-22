@@ -29,5 +29,7 @@ Analyze the current repository state and make incremental progress on the nuCMS 
 - Update CLAUDE.md if needed but never change this prompt (claude-prompt.txt).
 - Above all, do not change the goals or constraints of the project. Moving the goalpost is *not allowed*.
 - You can use the gh CLI to manage issues in order to keep track of tasks and bugs. Close them with an appropriate pull request.
+- Always a good idea to look at GitHub issues at the start of your session for tasks or bugs that need fixing.
+- Remember you can attach screenshots to issues or pull requests using the `gh` CLI, much better than lots of random screenshots littering the repository.
 - Be mindful that you are running with `--dangerously-skip-permissions`, so you should not perform any actions that could harm the system or data integrity.
 - Clean up your old playwright screenshots at the end of each session if they are not needed anymore.
