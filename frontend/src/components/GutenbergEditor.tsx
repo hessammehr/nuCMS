@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { serialize, parse } from '@wordpress/blocks';
+import { serialize, parse, createBlock } from '@wordpress/blocks';
 import { 
   BlockEditorProvider, 
   BlockEditorKeyboardShortcuts, 
@@ -39,10 +39,15 @@ interface GutenbergEditorProps {
 function GutenbergEditor({ content, onChange, title, onTitleChange, onSave, saving }: GutenbergEditorProps) {
   const [blocks, setBlocks] = useState(() => {
     try {
-      return content ? parse(content) : [];
+      if (content) {
+        return parse(content);
+      } else {
+        // Start with a default paragraph block when no content exists
+        return [createBlock('core/paragraph')];
+      }
     } catch (error) {
-      console.warn('Failed to parse content as blocks, starting with empty editor:', error);
-      return [];
+      console.warn('Failed to parse content as blocks, starting with default paragraph:', error);
+      return [createBlock('core/paragraph')];
     }
   });
 
@@ -177,11 +182,11 @@ function GutenbergEditor({ content, onChange, title, onTitleChange, onSave, savi
   useEffect(() => {
     if (!isInternalUpdate.current) {
       try {
-        const parsedBlocks = content ? parse(content) : [];
+        const parsedBlocks = content ? parse(content) : [createBlock('core/paragraph')];
         setBlocks(parsedBlocks);
       } catch (error) {
         console.warn('Failed to parse content as blocks:', error);
-        setBlocks([]);
+        setBlocks([createBlock('core/paragraph')]);
       }
     }
     isInternalUpdate.current = false;
