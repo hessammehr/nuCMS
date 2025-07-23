@@ -28,7 +28,9 @@ Analyze the current repository state and make incremental progress on the nuCMS 
 # Approach
 - Suggestions for when you "wake up":
     - Check the git log and GitHub issues (gh issue list) to see recent activity and issues/tasks
-    - If you see open issues, especially if opened not by yourself, prioritize them
+    - If you see open issues, prioritize them
+    - When commenting on issues, prefix with "CLAUDE:" to indicate it's from you (otherwise they will all appear as if I wrote them, so this is important)
+    - If an issue seems to be re-opened, it means it wasn't fixed properly, so be extra vigilant next to ensure you've actually fixed it rather than declaring it fixed, attach visual proof and ask yourself: Is this really fixed? Don't fool yourself
     - Have a visual look at the current state of the admin interface and editor
 - Suggestions in preparation for ending your session and "going to sleep":
     - Make sure to commit your changes with a clear message summarizing what you accomplished
