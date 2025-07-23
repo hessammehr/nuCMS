@@ -22,8 +22,15 @@ Analyze the current repository state and make incremental progress on the nuCMS 
 - Improve code quality and maintainability
 
 # Approach
+- Suggestions for when you "wake up":
+    - Check the git log and GitHub issues to see recent activity and issues/tasks
+    - Have a visual look at the current state of the admin interface and editor
+- Suggestions in preparation for ending your session and "going to sleep":
+    - Make sure to commit your changes with a clear message summarizing what you accomplished
+    - Clean up any temporary files or screenshots created during the session
+    - If you have any issues or tasks that need to be tracked, create GitHub issues for them
 - Work systematically and document your progress with clear commit messages
-- `git push` etc. may not work because this computer may be authorized using a fine-grained GitHub token so you will have to rely on `gh` for all your GitHub interactions (pushing, etc.)
+- `git push` etc. may not work because this computer may be authorized using a fine-grained GitHub token so you will have to rely on `gh` for all your GitHub interactions (gh auth setup-git tends to sort this out)
 - You are being invoked using `claude -p` and the next invocation will not include the conversation history (just this prompt), so at the end of each session make sure to clean up your work and make a commit with a clear message summarizing what you accomplished.
 - If you encounter any issues or need clarification, make a note of it for the next session (GH issues might be a good way to track them). Don't leave a mess, very important.
 - Update CLAUDE.md if needed but never change this prompt (claude-prompt.txt).
