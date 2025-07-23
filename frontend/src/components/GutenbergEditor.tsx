@@ -18,7 +18,8 @@ import {
   SlotFillProvider,
   Button,
   ToolbarGroup,
-  ToolbarButton
+  ToolbarButton,
+  TabPanel
 } from '@wordpress/components';
 import { 
   InterfaceSkeleton,
@@ -27,6 +28,7 @@ import {
 import { useSelect, useDispatch } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 import { cog, close, undo as undoIcon, redo as redoIcon, plus } from '@wordpress/icons';
+import DocumentInspector from './DocumentInspector';
 
 interface GutenbergEditorProps {
   content: string;
@@ -62,22 +64,25 @@ function GutenbergEditor({ content, onChange, title, onTitleChange, onSave, savi
     []
   );
 
-  // Undo/Redo functionality
+  // Undo/Redo functionality - memoized to prevent unnecessary rerenders
   const { hasUndo, hasRedo } = useSelect(
     (select: any) => {
-      // Try block-editor store first, fallback to core
-      const blockEditorSelect = select('core/block-editor');
-      if (blockEditorSelect && blockEditorSelect.hasUndo && blockEditorSelect.hasRedo) {
-        return {
-          hasUndo: blockEditorSelect.hasUndo(),
-          hasRedo: blockEditorSelect.hasRedo()
-        };
+      try {
+        const blockEditorSelect = select('core/block-editor');
+        if (blockEditorSelect && blockEditorSelect.hasUndo && blockEditorSelect.hasRedo) {
+          return {
+            hasUndo: blockEditorSelect.hasUndo(),
+            hasRedo: blockEditorSelect.hasRedo()
+          };
+        }
+      } catch (error) {
+        console.warn('Block editor store not available for undo/redo');
       }
-      // Fallback to core store
-      const coreSelect = select('core');
+      
+      // Fallback - always return consistent object structure
       return {
-        hasUndo: coreSelect.hasUndo ? coreSelect.hasUndo() : false,
-        hasRedo: coreSelect.hasRedo ? coreSelect.hasRedo() : false
+        hasUndo: false,
+        hasRedo: false
       };
     },
     []
@@ -266,7 +271,37 @@ function GutenbergEditor({ content, onChange, title, onTitleChange, onSave, savi
                 </div>
               </div>
             }
-            sidebar={isInspectorOpen && <BlockInspector />}
+            sidebar={isInspectorOpen && (
+              <div className="edit-post-sidebar">
+                <TabPanel
+                  className="edit-post-sidebar__panel-tabs"
+                  activeClass="is-active"
+                  tabs={[
+                    {
+                      name: 'document',
+                      title: __('Document'),
+                      className: 'edit-post-sidebar__panel-tab',
+                    },
+                    {
+                      name: 'block',
+                      title: __('Block'),
+                      className: 'edit-post-sidebar__panel-tab',
+                    },
+                  ]}
+                >
+                  {(tab) => (
+                    <div className="edit-post-sidebar__panel-tab-content">
+                      {tab.name === 'document' && (
+                        <DocumentInspector 
+                          title={title}
+                        />
+                      )}
+                      {tab.name === 'block' && <BlockInspector />}
+                    </div>
+                  )}
+                </TabPanel>
+              </div>
+            )}
             content={
               <div className="interface-interface-skeleton__content">
                 <div className="edit-post-visual-editor">
