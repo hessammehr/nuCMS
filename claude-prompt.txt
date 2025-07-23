@@ -28,6 +28,7 @@ Analyze the current repository state and make incremental progress on the nuCMS 
 # Approach
 - Suggestions for when you "wake up":
     - Check the git log and GitHub issues to see recent activity and issues/tasks
+    - If you see open issues, especially if opened not by yourself, prioritize them
     - Have a visual look at the current state of the admin interface and editor
 - Suggestions in preparation for ending your session and "going to sleep":
     - Make sure to commit your changes with a clear message summarizing what you accomplished
@@ -51,4 +52,4 @@ Analyze the current repository state and make incremental progress on the nuCMS 
     - Change, simplify, re-interpret or water down the goals of the project
     - Declare as done, complete or polished something that isn't
     - Call the UI done until it matches Gutenberg's EXACTLY
-    - Avoid the terms "done", "complete", "final", "advanced", "polished" in e.g. test blog posts as they mislead you (and future you) into thinking the project is further along than it is
+    - Avoid the terms "done", "excellent", "complete", "final", "advanced", "polished" in e.g. test blog posts as they mislead you (and future you) into thinking the project is further along than it is
