@@ -10,7 +10,7 @@ const createPostSchema = z.object({
   content: z.string(),
   excerpt: z.string().optional(),
   status: z.enum(['DRAFT', 'PUBLISHED', 'PRIVATE']).optional(),
-  publishedAt: z.string().optional()
+  publishedAt: z.string().optional().nullable()
 });
 
 const updatePostSchema = createPostSchema.partial().extend({
