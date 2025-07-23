@@ -10,6 +10,7 @@ Analyze the current repository state and make incremental progress on the nuCMS 
         - Don't make up your own UI components, conventions or CSS, use Gutenberg's
         - The Gutenberg editor of course doesn't have the admin interface, but the editor part of nuCMS should look and perform exactly the same.
         - The editor should not just look like Gutenberg, it should also behave like it. Interact with it as a user would, e.g. adding blocks, changing settings, undo/redo, save, navigate, add media, everything that a user would expect from using Gutenberg.
+        - If possible, use playwright in non-headless mode so I can also see what you are seeing.
 - For the admin interface, imagine WP but a legacy-free version using Gutenberg's UI components, no plugins, just a clean, modern interface.
 - We still want user management and permissions, media upload and perhaps down the line templates, themes and patterns, but don't bring in PHP and don't overcomplicate things to start.
 
