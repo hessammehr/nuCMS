@@ -10,7 +10,8 @@ import {
   BlockToolbar,
   BlockSelectionClearer,
   __unstableEditorStyles as EditorStyles,
-  BlockBreadcrumb
+  BlockBreadcrumb,
+  Inserter
 } from '@wordpress/block-editor';
 import { 
   Popover, 
@@ -25,7 +26,7 @@ import {
 } from '@wordpress/interface';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
-import { cog, close, undo as undoIcon, redo as redoIcon } from '@wordpress/icons';
+import { cog, close, undo as undoIcon, redo as redoIcon, plus } from '@wordpress/icons';
 
 interface GutenbergEditorProps {
   content: string;
@@ -225,6 +226,11 @@ function GutenbergEditor({ content, onChange, title, onTitleChange, onSave, savi
               <div className="edit-post-header">
                 <div className="edit-post-header__toolbar">
                   <ToolbarGroup>
+                    <Inserter
+                      position="bottom right"
+                      showInserterHelpPanel={true}
+                      __experimentalIsQuick={false}
+                    />
                     <ToolbarButton
                       icon={undoIcon}
                       label={__('Undo')}
@@ -284,6 +290,7 @@ function GutenbergEditor({ content, onChange, title, onTitleChange, onSave, savi
                       )}
                       <EditorStyles styles={[]} />
                       <BlockSelectionClearer className="block-editor-writing-flow">
+                        <BlockEditorKeyboardShortcuts />
                         <BlockToolbar hideDragHandle />
                         <WritingFlow>
                           <ObserveTyping>
