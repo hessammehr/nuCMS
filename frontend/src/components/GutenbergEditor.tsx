@@ -75,10 +75,16 @@ function GutenbergEditor({
 
   const { enableComplementaryArea, disableComplementaryArea } = useDispatch(interfaceStore);
   
+  // Enable the inspector by default on first render
+  useEffect(() => {
+    enableComplementaryArea('core', 'edit-post/document');
+  }, [enableComplementaryArea]);
+  
   const isInspectorOpen = useSelect(
     (select: any) => {
       const { getActiveComplementaryArea } = select(interfaceStore);
-      return getActiveComplementaryArea('core') === 'edit-post/block';
+      const activeArea = getActiveComplementaryArea('core');
+      return activeArea === 'edit-post/document' || activeArea === 'edit-post/block';
     },
     []
   );
@@ -110,11 +116,20 @@ function GutenbergEditor({
   const { undo, redo } = useDispatch('core/block-editor');
 
 
+  const activeArea = useSelect(
+    (select: any) => {
+      const { getActiveComplementaryArea } = select(interfaceStore);
+      return getActiveComplementaryArea('core');
+    },
+    []
+  );
+
   const toggleInspector = () => {
     if (isInspectorOpen) {
       disableComplementaryArea('core');
     } else {
-      enableComplementaryArea('core', 'edit-post/block');
+      // Default to document inspector when opening
+      enableComplementaryArea('core', 'edit-post/document');
     }
   };
 
@@ -311,6 +326,14 @@ function GutenbergEditor({
                 <TabPanel
                   className="edit-post-sidebar__panel-tabs"
                   activeClass="is-active"
+                  initialTabName={activeArea === 'edit-post/block' ? 'block' : 'document'}
+                  onSelect={(tabName) => {
+                    if (tabName === 'document') {
+                      enableComplementaryArea('core', 'edit-post/document');
+                    } else if (tabName === 'block') {
+                      enableComplementaryArea('core', 'edit-post/block');
+                    }
+                  }}
                   tabs={[
                     {
                       name: 'document',

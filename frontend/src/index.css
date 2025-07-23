@@ -18,27 +18,42 @@
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 }
 
-/* Editor header styles */
+/* Editor header styles - matching WordPress Gutenberg */
 .edit-post-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 16px;
+  padding: 0;
   border-bottom: 1px solid #e0e0e0;
   background: #fff;
-  min-height: 56px;
+  min-height: 60px;
+  position: relative;
 }
 
 .edit-post-header__toolbar {
   display: flex;
   align-items: center;
+  height: 60px;
+  padding: 0 16px;
+}
+
+.edit-post-header__toolbar .components-toolbar-group {
+  border: none;
+  box-shadow: none;
+}
+
+.edit-post-header__toolbar .components-toolbar-group .components-button {
+  min-width: 48px;
+  height: 48px;
+  padding: 6px;
 }
 
 .edit-post-header__settings {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-left: auto;
+  padding: 0 16px;
+  height: 60px;
 }
 
 /* Visual editor content area */
