@@ -341,39 +341,14 @@ function GutenbergEditor({
                   </div>
                 </div>
                 <div className="edit-post-header__settings">
-                  {onExit && (
-                    <Button
-                      icon={close}
-                      label={__('Exit')}
-                      onClick={onExit}
-                      className="edit-post-header__close-button"
-                      variant="tertiary"
-                    />
-                  )}
                   {onSave && (
-                    <>
-                      <Button
-                        variant="secondary"
-                        onClick={onSave}
-                        disabled={saving}
-                        style={{ marginRight: '8px' }}
-                      >
-                        {saving ? __('Saving...') : (status === 'PUBLISHED' ? __('Update') : __('Save Draft'))}
-                      </Button>
-                      {status !== 'PUBLISHED' && onStatusChange && (
-                        <Button
-                          variant="primary"
-                          onClick={() => {
-                            onStatusChange('PUBLISHED');
-                            if (onSave) onSave();
-                          }}
-                          disabled={saving}
-                          style={{ marginRight: '8px' }}
-                        >
-                          {__('Publish')}
-                        </Button>
-                      )}
-                    </>
+                    <Button
+                      variant="secondary"
+                      onClick={onSave}
+                      disabled={saving}
+                    >
+                      {saving ? __('Saving...') : (status === 'PUBLISHED' ? __('Update') : __('Save Draft'))}
+                    </Button>
                   )}
                   <Button
                     icon={cog}
