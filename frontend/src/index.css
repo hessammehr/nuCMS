@@ -77,10 +77,17 @@
   color: white !important;
   border-radius: 2px !important;
   margin-right: 8px;
+  cursor: pointer !important;
 }
 
 .edit-post-header__logo:hover {
   background: #32373c !important;
+  transform: scale(1.02);
+  transition: all 0.1s ease;
+}
+
+.edit-post-header__logo:active {
+  transform: scale(0.98);
 }
 
 /* Block inserter - make it blue like Gutenberg */

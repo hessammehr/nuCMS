@@ -30,6 +30,7 @@ import { __ } from '@wordpress/i18n';
 import { cog, close, undo as undoIcon, redo as redoIcon, plus, listView, wordpress } from '@wordpress/icons';
 import { CommandMenu, useCommand } from '@wordpress/commands';
 import DocumentInspector from './DocumentInspector';
+import { createMediaUpload, createMediaSelect } from '../utils/media';
 
 interface GutenbergEditorProps {
   content: string;
@@ -159,6 +160,9 @@ function GutenbergEditor({
     enableCustomLineHeight: true,
     enableCustomSpacing: true,
     enableCustomUnits: true,
+    // Media upload settings
+    mediaUpload: createMediaUpload(),
+    mediaLibrary: createMediaSelect(),
     colors: [
       { name: 'Black', slug: 'black', color: '#000000' },
       { name: 'Cyan bluish gray', slug: 'cyan-bluish-gray', color: '#abb8c3' },
@@ -304,8 +308,9 @@ function GutenbergEditor({
                   <ToolbarGroup className="edit-post-header__toolbar-left">
                     <ToolbarButton
                       icon={wordpress}
-                      label={__('WordPress')}
+                      label={__('nuCMS Dashboard')}
                       className="edit-post-header__logo"
+                      onClick={onExit}
                     />
                     <div className="edit-post-header__inserter">
                       <Inserter
