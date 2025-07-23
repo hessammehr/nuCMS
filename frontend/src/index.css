@@ -31,7 +31,7 @@
   z-index: 9999;
 }
 
-/* Editor header styles - matching WordPress Gutenberg */
+/* Editor header styles - matching WordPress Gutenberg exactly */
 .edit-post-header {
   display: flex;
   justify-content: space-between;
@@ -53,12 +53,76 @@
 .edit-post-header__toolbar .components-toolbar-group {
   border: none;
   box-shadow: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .edit-post-header__toolbar .components-toolbar-group .components-button {
   min-width: 48px;
   height: 48px;
   padding: 6px;
+  border-radius: 2px;
+}
+
+/* WordPress logo styling */
+.edit-post-header__logo {
+  background: #23282d !important;
+  color: white !important;
+  border-radius: 2px !important;
+  margin-right: 8px;
+}
+
+.edit-post-header__logo:hover {
+  background: #32373c !important;
+}
+
+/* Block inserter - make it blue like Gutenberg */
+.edit-post-header__inserter .components-button {
+  background: #0073aa !important;
+  color: white !important;
+  border-radius: 2px !important;
+  margin-right: 8px;
+}
+
+.edit-post-header__inserter .components-button:hover {
+  background: #005a87 !important;
+}
+
+.edit-post-header__inserter .components-button:focus {
+  background: #005a87 !important;
+  box-shadow: 0 0 0 1.5px #007cba !important;
+}
+
+/* Document title in center */
+.edit-post-header__center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  height: 60px;
+}
+
+.edit-post-header__document-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f6f7f7;
+  padding: 6px 12px;
+  border-radius: 2px;
+  font-size: 13px;
+  color: #1e1e1e;
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.edit-post-header__document-shortcut {
+  font-size: 11px;
+  color: #757575;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .edit-post-header__settings {

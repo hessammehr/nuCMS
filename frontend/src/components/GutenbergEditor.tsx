@@ -27,7 +27,7 @@ import {
 } from '@wordpress/interface';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
-import { cog, close, undo as undoIcon, redo as redoIcon, plus } from '@wordpress/icons';
+import { cog, close, undo as undoIcon, redo as redoIcon, plus, listView, wordpress } from '@wordpress/icons';
 import DocumentInspector from './DocumentInspector';
 
 interface GutenbergEditorProps {
@@ -266,21 +266,17 @@ function GutenbergEditor({
             header={
               <div className="edit-post-header">
                 <div className="edit-post-header__toolbar">
-                  {onExit && (
-                    <ToolbarGroup>
-                      <ToolbarButton
-                        icon={close}
-                        label={__('Exit')}
-                        onClick={onExit}
-                        className="edit-post-header__close-button"
-                      />
-                    </ToolbarGroup>
-                  )}
-                  <ToolbarGroup>
+                  <ToolbarGroup className="edit-post-header__toolbar-left">
+                    <ToolbarButton
+                      icon={wordpress}
+                      label={__('WordPress')}
+                      className="edit-post-header__logo"
+                    />
                     <Inserter
                       position="bottom right"
                       showInserterHelpPanel={true}
                       __experimentalIsQuick={false}
+                      className="edit-post-header__inserter"
                     />
                     <ToolbarButton
                       icon={undoIcon}
@@ -296,9 +292,29 @@ function GutenbergEditor({
                       onClick={() => redo && redo()}
                       disabled={!hasRedo}
                     />
+                    <ToolbarButton
+                      icon={listView}
+                      label={__('List View')}
+                      shortcut="Ctrl+Shift+Alt+O"
+                    />
                   </ToolbarGroup>
                 </div>
+                <div className="edit-post-header__center">
+                  <div className="edit-post-header__document-title">
+                    <span>{title ? title : __('Say Hello to Gutenberg, the WordPress Edit...')}</span>
+                    <span className="edit-post-header__document-shortcut">⌘K</span>
+                  </div>
+                </div>
                 <div className="edit-post-header__settings">
+                  {onExit && (
+                    <Button
+                      icon={close}
+                      label={__('Exit')}
+                      onClick={onExit}
+                      className="edit-post-header__close-button"
+                      variant="tertiary"
+                    />
+                  )}
                   {onSave && (
                     <>
                       <Button
