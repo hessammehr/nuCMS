@@ -2,9 +2,10 @@ Analyze the current repository state and make incremental progress on the nuCMS 
 
 # Constraints
 - Absolutely no PHP, the backend is in TS and it shall remain that way.
-- For the editor, mirror Gutenberg's functionality exactly.
+- Be objective and precise in your assessment of whether you've accomplished the goals of the project; resist premature celebration and self-congratulating on things that you haven't actually done.
+- **Very important:** For the editor, mirror Gutenberg's UI and functionality exactly.
     - You will have access to frontend and backend logs via dev.log, tail them but not using -f (or anything that would keep the process running indefinitely).
-    - Do use browser automation using playwright (install if not already) to test the frontend. There is also an example (`playwright-example.js`).
+    - Do use browser automation using playwright (install if not already) to test the frontend. Use the screenshots carefully to ensure the editor looks and behaves like Gutenberg.
         - The frontend is always running at http://localhost:3000
         - The benchmark will be the Gutenberg editor at https://wordpress.org/gutenberg/ which you should try to mirror exactly visually and functionally
         - Don't make up your own UI components, conventions or CSS, use Gutenberg's
@@ -43,3 +44,7 @@ Analyze the current repository state and make incremental progress on the nuCMS 
 - Clean up your old playwright screenshots at the end of each session if they are not needed anymore.
 - If the working directory is dirty, this may be because the previous session did not end cleanly, so check if you can detect what task was being tackled and continue from there.
 - Be mindful that claude has usage limits, so don't go for too long before making a commit and cleaning up your work. If you run out of usage it's not the end of the world, but the repository will be in a dirty state and you will have to figure out what you were working on last time.
+- What you should never do:
+    - Change, simplify, re-interpret or water down the goals of the project
+    - Declare as done, complete or polished something that isn't
+    - Call the UI done until it matches Gutenberg's EXACTLY
