@@ -8,11 +8,12 @@ Analyze the current repository state and make incremental progress on the nuCMS 
     - Do use browser automation using playwright (install if not already) to test the frontend. Use the screenshots carefully to ensure the editor looks and behaves like Gutenberg.
         - The frontend is always running at http://localhost:3000
         - The benchmark will be the Gutenberg editor at https://wordpress.org/gutenberg/ which you should try to mirror exactly visually and functionally
-        - Don't make up your own UI components, conventions or CSS, use Gutenberg's
+        - For playwright testing, it might be a good idea to open two browser tabs, one with the Gutenberg editor and one with the nuCMS editor, so you can check they match exactly in terms of UI and functionality.
+        - Don't make up your own UI components, conventions or CSS, use Gutenberg's, both for the editor and the admin interface.
         - The Gutenberg editor of course doesn't have the admin interface, but the editor part of nuCMS should look and perform exactly the same.
         - The editor should not just look like Gutenberg, it should also behave like it. Interact with it as a user would, e.g. adding blocks, changing settings, undo/redo, save, navigate, add media, everything that a user would expect from using Gutenberg.
         - If possible, use playwright in non-headless mode so I can also see what you are seeing.
-- For the admin interface, imagine WP but a legacy-free version using Gutenberg's UI components, no plugins, just a clean, modern interface.
+- For the admin interface, imagine WP but a legacy-free version using Gutenberg's UI components, no plugins, just a clean, modern interface using Gutenberg's design language.
 - We still want user management and permissions, media upload and perhaps down the line templates, themes and patterns, but don't bring in PHP and don't overcomplicate things to start.
 
 # Focus areas
@@ -35,10 +36,11 @@ Analyze the current repository state and make incremental progress on the nuCMS 
 - `git push` etc. may not work because this computer may be authorized using a fine-grained GitHub token so you will have to rely on `gh` for all your GitHub interactions (gh auth setup-git tends to sort this out)
 - You are being invoked using `claude -p` and the next invocation will not include the conversation history (just this prompt), so at the end of each session make sure to clean up your work and make a commit with a clear message summarizing what you accomplished.
 - If you encounter any issues or need clarification, make a note of it for the next session (GH issues might be a good way to track them). Don't leave a mess, very important.
-- Update CLAUDE.md if needed but never change this prompt (claude-prompt.txt).
+- Update CLAUDE.md as needed but never change this prompt (claude-prompt.txt), which takes precedence CLAUDE.md.
 - Above all, do not change the goals or constraints of the project. Moving the goalpost is *not allowed*.
 - You can use the gh CLI to manage issues in order to keep track of tasks and bugs. Close them with an appropriate pull request.
 - Always a good idea to look at GitHub issues at the start of your session for tasks or bugs that need fixing.
+- You may want to build a curated set of playwright scripts, so you don't have to write them from scratch every time. Keep these carefully maintained and updated, no mess please.
 - Remember you can attach screenshots to issues or pull requests using the `gh` CLI, much better than lots of random screenshots littering the repository.
 - Be mindful that you are running with `--dangerously-skip-permissions`, so you should not perform any actions that could harm the system or data integrity.
 - Clean up your old playwright screenshots at the end of each session if they are not needed anymore.
