@@ -37,9 +37,28 @@ interface GutenbergEditorProps {
   onTitleChange?: (title: string) => void;
   onSave?: () => void;
   saving?: boolean;
+  slug?: string;
+  excerpt?: string;
+  status?: string;
+  onSlugChange?: (slug: string) => void;
+  onExcerptChange?: (excerpt: string) => void;
+  onStatusChange?: (status: string) => void;
 }
 
-function GutenbergEditor({ content, onChange, title, onTitleChange, onSave, saving }: GutenbergEditorProps) {
+function GutenbergEditor({ 
+  content, 
+  onChange, 
+  title, 
+  onTitleChange, 
+  onSave, 
+  saving, 
+  slug, 
+  excerpt, 
+  status, 
+  onSlugChange, 
+  onExcerptChange, 
+  onStatusChange 
+}: GutenbergEditorProps) {
   const [blocks, setBlocks] = useState(() => {
     try {
       if (content) {
@@ -254,13 +273,29 @@ function GutenbergEditor({ content, onChange, title, onTitleChange, onSave, savi
                 </div>
                 <div className="edit-post-header__settings">
                   {onSave && (
-                    <Button
-                      variant="primary"
-                      onClick={onSave}
-                      disabled={saving}
-                    >
-                      {saving ? __('Saving...') : __('Save')}
-                    </Button>
+                    <>
+                      <Button
+                        variant="secondary"
+                        onClick={onSave}
+                        disabled={saving}
+                        style={{ marginRight: '8px' }}
+                      >
+                        {saving ? __('Saving...') : (status === 'PUBLISHED' ? __('Update') : __('Save Draft'))}
+                      </Button>
+                      {status !== 'PUBLISHED' && onStatusChange && (
+                        <Button
+                          variant="primary"
+                          onClick={() => {
+                            onStatusChange('PUBLISHED');
+                            if (onSave) onSave();
+                          }}
+                          disabled={saving}
+                          style={{ marginRight: '8px' }}
+                        >
+                          {__('Publish')}
+                        </Button>
+                      )}
+                    </>
                   )}
                   <Button
                     icon={cog}
@@ -289,11 +324,17 @@ function GutenbergEditor({ content, onChange, title, onTitleChange, onSave, savi
                     },
                   ]}
                 >
-                  {(tab) => (
+                  {(tab: { name: string; title: string; className: string }) => (
                     <div className="edit-post-sidebar__panel-tab-content">
                       {tab.name === 'document' && (
                         <DocumentInspector 
                           title={title}
+                          slug={slug}
+                          excerpt={excerpt}
+                          status={status}
+                          onSlugChange={onSlugChange}
+                          onExcerptChange={onExcerptChange}
+                          onStatusChange={onStatusChange}
                         />
                       )}
                       {tab.name === 'block' && <BlockInspector />}

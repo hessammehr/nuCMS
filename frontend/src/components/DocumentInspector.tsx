@@ -8,9 +8,25 @@ interface DocumentInspectorProps {
   title?: string;
   wordCount?: number;
   readingTime?: number;
+  slug?: string;
+  excerpt?: string;
+  status?: string;
+  onSlugChange?: (slug: string) => void;
+  onExcerptChange?: (excerpt: string) => void;
+  onStatusChange?: (status: string) => void;
 }
 
-function DocumentInspector({ title, wordCount, readingTime }: DocumentInspectorProps) {
+function DocumentInspector({ 
+  title, 
+  wordCount, 
+  readingTime, 
+  slug, 
+  excerpt, 
+  status, 
+  onSlugChange, 
+  onExcerptChange, 
+  onStatusChange 
+}: DocumentInspectorProps) {
   // Get blocks from the block editor
   const blocks = useSelect(
     (select: any) => select('core/block-editor').getBlocks(),
@@ -109,6 +125,78 @@ function DocumentInspector({ title, wordCount, readingTime }: DocumentInspectorP
             </div>
           </PanelRow>
         </PanelBody>
+        
+        {(onSlugChange || onExcerptChange || onStatusChange) && (
+          <PanelBody title={__('Post Settings')} initialOpen={true}>
+            {onSlugChange && (
+              <PanelRow>
+                <div style={{ width: '100%' }}>
+                  <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+                    {__('Slug')}
+                  </label>
+                  <input
+                    type="text"
+                    value={slug || ''}
+                    onChange={(e) => onSlugChange(e.target.value)}
+                    style={{ 
+                      width: '100%', 
+                      padding: '8px', 
+                      border: '1px solid #ddd', 
+                      borderRadius: '4px' 
+                    }}
+                  />
+                </div>
+              </PanelRow>
+            )}
+            
+            {onExcerptChange && (
+              <PanelRow>
+                <div style={{ width: '100%' }}>
+                  <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+                    {__('Excerpt')}
+                  </label>
+                  <textarea
+                    value={excerpt || ''}
+                    onChange={(e) => onExcerptChange(e.target.value)}
+                    rows={3}
+                    style={{ 
+                      width: '100%', 
+                      padding: '8px', 
+                      border: '1px solid #ddd', 
+                      borderRadius: '4px',
+                      resize: 'vertical'
+                    }}
+                    placeholder={__('Write an excerpt (optional)')}
+                  />
+                </div>
+              </PanelRow>
+            )}
+            
+            {onStatusChange && (
+              <PanelRow>
+                <div style={{ width: '100%' }}>
+                  <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+                    {__('Status')}
+                  </label>
+                  <select
+                    value={status || 'DRAFT'}
+                    onChange={(e) => onStatusChange(e.target.value)}
+                    style={{ 
+                      width: '100%', 
+                      padding: '8px', 
+                      border: '1px solid #ddd', 
+                      borderRadius: '4px' 
+                    }}
+                  >
+                    <option value="DRAFT">{__('Draft')}</option>
+                    <option value="PUBLISHED">{__('Published')}</option>
+                    <option value="PRIVATE">{__('Private')}</option>
+                  </select>
+                </div>
+              </PanelRow>
+            )}
+          </PanelBody>
+        )}
       </Panel>
     </div>
   );

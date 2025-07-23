@@ -133,76 +133,20 @@ function PostEditor() {
       )}
 
       <div className="editor-container">
-        <div className="editor-header">
-          <input
-            type="text"
-            placeholder="Post title"
-            value={post.title || ''}
-            onChange={(e) => handleTitleChange(e.target.value)}
-            disabled={saving}
-          />
-
-          <div className="editor-meta">
-            <div style={{ flex: 1 }}>
-              <label>Slug:</label>
-              <input
-                type="text"
-                value={post.slug || ''}
-                onChange={(e) => setPost(prev => ({ ...prev, slug: e.target.value }))}
-                disabled={saving}
-                style={{ width: '100%' }}
-              />
-            </div>
-            
-            <div style={{ flex: 1, marginLeft: '1rem' }}>
-              <label>Excerpt:</label>
-              <input
-                type="text"
-                value={post.excerpt || ''}
-                onChange={(e) => setPost(prev => ({ ...prev, excerpt: e.target.value }))}
-                disabled={saving}
-                style={{ width: '100%' }}
-              />
-            </div>
-            
-            <div>
-              <label>Status:</label>
-              <select
-                value={post.status || 'DRAFT'}
-                onChange={(e) => setPost(prev => ({ ...prev, status: e.target.value as any }))}
-                disabled={saving}
-              >
-                <option value="DRAFT">Draft</option>
-                <option value="PUBLISHED">Published</option>
-                <option value="PRIVATE">Private</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="editor-actions">
-            <button 
-              onClick={() => handleSave('DRAFT')}
-              disabled={saving}
-              className="btn btn-secondary"
-            >
-              {saving ? 'Saving...' : 'Save Draft'}
-            </button>
-            <button 
-              onClick={() => handleSave('PUBLISHED')}
-              disabled={saving}
-              className="btn"
-            >
-              {saving ? 'Publishing...' : 'Publish'}
-            </button>
-          </div>
-        </div>
-
-        <div className="editor-content">
-          <GutenbergEditor
-            content={post.content || ''}
-            onChange={(content) => setPost(prev => ({ ...prev, content }))}
-          />
-        </div>
+        <GutenbergEditor
+          content={post.content || ''}
+          onChange={(content) => setPost(prev => ({ ...prev, content }))}
+          title={post.title || ''}
+          onTitleChange={handleTitleChange}
+          onSave={handleSaveQuick}
+          saving={saving}
+          slug={post.slug || ''}
+          excerpt={post.excerpt || ''}
+          status={post.status || 'DRAFT'}
+          onSlugChange={(slug) => setPost(prev => ({ ...prev, slug }))}
+          onExcerptChange={(excerpt) => setPost(prev => ({ ...prev, excerpt }))}
+          onStatusChange={(status) => setPost(prev => ({ ...prev, status: status as any }))}
+        />
       </div>
     </div>
   );
