@@ -23,6 +23,7 @@ import {
 } from '@wordpress/components';
 import { 
   InterfaceSkeleton,
+  ComplementaryArea,
   store as interfaceStore
 } from '@wordpress/interface';
 import { useSelect, useDispatch } from '@wordpress/data';
@@ -130,7 +131,6 @@ function GutenbergEditor({
     if (isInspectorOpen) {
       disableComplementaryArea('core');
     } else {
-      // Default to document inspector when opening
       enableComplementaryArea('core', 'edit-post/document');
     }
   };
@@ -263,6 +263,7 @@ function GutenbergEditor({
               footer: __('Editor footer'),
             }}
             enableRegionNavigation={false}
+            className={isInspectorOpen ? 'has-sidebar' : ''}
             header={
               <div className="edit-post-header">
                 <div className="edit-post-header__toolbar">
@@ -349,11 +350,12 @@ function GutenbergEditor({
                 </div>
               </div>
             }
-            sidebar={isInspectorOpen && (
+            sidebar={(
               <div className="edit-post-sidebar">
                 <TabPanel
                   className="edit-post-sidebar__panel-tabs"
                   activeClass="is-active"
+                  orientation="horizontal"
                   tabs={[
                     {
                       name: 'document',
