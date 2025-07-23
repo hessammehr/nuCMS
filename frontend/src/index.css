@@ -235,13 +235,14 @@ body {
 
 .edit-post-post-title__input::placeholder {
   color: #6c7781 !important;
-  font-weight: normal;
+  font-weight: bold;
   opacity: 1 !important;
 }
 
 /* Ensure title field placeholder is visible when empty */
 .edit-post-post-title__input:placeholder-shown {
   color: #6c7781;
+  font-weight: bold;
 }
 
 
