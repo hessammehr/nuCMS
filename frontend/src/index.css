@@ -207,12 +207,21 @@ body {
   color: #1e1e1e;
   padding: 0;
   margin: 0;
-  min-height: 1.2em;
+  min-height: 3rem;
   overflow: hidden;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 .edit-post-post-title__input::placeholder {
-  color: #757575;
+  color: #6c7781 !important;
+  font-weight: normal;
+  opacity: 1 !important;
+}
+
+/* Ensure title field placeholder is visible when empty */
+.edit-post-post-title__input:placeholder-shown {
+  color: #6c7781;
 }
 
 
