@@ -540,37 +540,60 @@ body {
   color: #666;
 }
 
-/* Interface Skeleton Layout Fix */
+/* Interface Skeleton Layout Fix - using flexbox for more predictable behavior */
 .interface-interface-skeleton {
-  display: grid !important;
-  grid-template-areas: 
-    "header header"
-    "content content"
-    "footer footer" !important;
-  grid-template-columns: 1fr !important;
-  grid-template-rows: auto 1fr auto !important;
+  display: flex !important;
+  flex-direction: column !important;
   height: 100vh !important;
+  width: 100vw !important;
 }
 
 .interface-interface-skeleton.has-sidebar {
-  grid-template-areas: 
-    "header header"
-    "content sidebar"
-    "footer footer" !important;
-  grid-template-columns: 1fr 280px !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.interface-interface-skeleton.has-sidebar .interface-interface-skeleton__body {
+  display: flex !important;
+  flex: 1 !important;
 }
 
 .interface-interface-skeleton__header {
-  grid-area: header !important;
+  flex-shrink: 0 !important;
+  height: 60px !important;
+  z-index: 10 !important;
+  position: relative !important;
 }
 
 .interface-interface-skeleton__content {
-  grid-area: content !important;
+  flex: 1 !important;
   overflow: auto !important;
+  background: #fff !important;
+  position: relative !important;
+  z-index: 1 !important;
+  min-height: 0 !important;
+}
+
+/* Fix for interface skeleton elements that might be intercepting clicks */
+.interface-interface-skeleton__body {
+  pointer-events: none !important;
+}
+
+.interface-interface-skeleton__editor {
+  pointer-events: none !important;
+}
+
+/* Ensure content elements can be clicked */
+.interface-interface-skeleton__content * {
+  pointer-events: auto !important;
+}
+
+.block-editor-rich-text__editable {
+  pointer-events: auto !important;
 }
 
 .interface-interface-skeleton__sidebar {
-  grid-area: sidebar !important;
+  flex-shrink: 0 !important;
   width: 280px !important;
   min-width: 280px !important;
   max-width: 280px !important;
@@ -583,7 +606,7 @@ body {
 }
 
 .interface-interface-skeleton__footer {
-  grid-area: footer !important;
+  flex-shrink: 0 !important;
 }
 
 /* Right Sidebar Styles */

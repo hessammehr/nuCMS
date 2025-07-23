@@ -65,7 +65,8 @@ function GutenbergEditor({
   const [blocks, setBlocks] = useState(() => {
     try {
       if (content) {
-        return parse(content);
+        const parsedBlocks = parse(content);
+        return parsedBlocks.length > 0 ? parsedBlocks : [createBlock('core/paragraph')];
       } else {
         // Start with a default paragraph block when no content exists
         return [createBlock('core/paragraph')];
@@ -77,11 +78,23 @@ function GutenbergEditor({
   });
 
   const { enableComplementaryArea, disableComplementaryArea } = useDispatch(interfaceStore);
+  const { resetBlocks, insertDefaultBlock } = useDispatch('core/block-editor');
   
   // Enable the inspector by default on first render
   useEffect(() => {
     enableComplementaryArea('core', 'edit-post/document');
   }, [enableComplementaryArea]);
+
+  // Ensure the block editor store is properly initialized with our blocks
+  useEffect(() => {
+    if (resetBlocks && blocks.length > 0) {
+      console.log('🔄 Syncing blocks to WordPress data store:', blocks.length);
+      resetBlocks(blocks);
+    } else if (insertDefaultBlock && blocks.length === 0) {
+      console.log('📝 Inserting default block');
+      insertDefaultBlock();
+    }
+  }, [resetBlocks, insertDefaultBlock, blocks]);
   
   const isInspectorOpen = useSelect(
     (select: any) => {
@@ -224,7 +237,16 @@ function GutenbergEditor({
   useEffect(() => {
     if (!isInternalUpdate.current) {
       try {
-        const parsedBlocks = content ? parse(content) : [createBlock('core/paragraph')];
+        let parsedBlocks;
+        if (content) {
+          parsedBlocks = parse(content);
+          // Ensure we always have at least one block
+          if (parsedBlocks.length === 0) {
+            parsedBlocks = [createBlock('core/paragraph')];
+          }
+        } else {
+          parsedBlocks = [createBlock('core/paragraph')];
+        }
         setBlocks(parsedBlocks);
       } catch (error) {
         console.warn('Failed to parse content as blocks:', error);
@@ -245,10 +267,21 @@ function GutenbergEditor({
     }
   };
 
+  // Debug logging to help understand the data flow
+  useEffect(() => {
+    console.log('🔍 Editor blocks state:', {
+      blocksCount: blocks.length,
+      blocks: blocks.map(block => ({ name: block.name, clientId: block.clientId, isValid: block.isValid })),
+      content,
+      serialized: blocks.length > 0 ? serialize(blocks) : 'no blocks'
+    });
+  }, [blocks, content]);
+
   return (
     <div className="gutenberg-fullscreen-editor">
       <SlotFillProvider>
         <BlockEditorProvider
+          key={blocks.length > 0 ? blocks[0].clientId : 'empty'}
           value={blocks}
           onInput={updateBlocks}
           onChange={updateBlocks}
@@ -273,12 +306,13 @@ function GutenbergEditor({
                       label={__('WordPress')}
                       className="edit-post-header__logo"
                     />
-                    <Inserter
-                      position="bottom right"
-                      showInserterHelpPanel={true}
-                      __experimentalIsQuick={false}
-                      className="edit-post-header__inserter"
-                    />
+                    <div className="edit-post-header__inserter">
+                      <Inserter
+                        position="bottom right"
+                        showInserterHelpPanel={true}
+                        __experimentalIsQuick={false}
+                      />
+                    </div>
                     <ToolbarButton
                       icon={undoIcon}
                       label={__('Undo')}
@@ -350,7 +384,7 @@ function GutenbergEditor({
                 </div>
               </div>
             }
-            sidebar={(
+            sidebar={isInspectorOpen ? (
               <div className="edit-post-sidebar">
                 <TabPanel
                   className="edit-post-sidebar__panel-tabs"
@@ -387,7 +421,7 @@ function GutenbergEditor({
                   )}
                 </TabPanel>
               </div>
-            )}
+            ) : null}
             content={
               <div className="interface-interface-skeleton__content">
                 <div className="edit-post-visual-editor">
