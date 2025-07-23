@@ -29,6 +29,7 @@ import {
 import { useSelect, useDispatch } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 import { cog, close, undo as undoIcon, redo as redoIcon, plus, listView, wordpress } from '@wordpress/icons';
+import { CommandMenu, useCommand } from '@wordpress/commands';
 import DocumentInspector from './DocumentInspector';
 
 interface GutenbergEditorProps {
@@ -84,6 +85,7 @@ function GutenbergEditor({
   useEffect(() => {
     enableComplementaryArea('core', 'edit-post/document');
   }, [enableComplementaryArea]);
+
 
   // Ensure the block editor store is properly initialized with our blocks
   useEffect(() => {
@@ -436,6 +438,7 @@ function GutenbergEditor({
             footer={<BlockBreadcrumb />}
           />
           <BlockEditorKeyboardShortcuts.Register />
+          <CommandMenu />
           <Popover.Slot />
         </BlockEditorProvider>
       </SlotFillProvider>
