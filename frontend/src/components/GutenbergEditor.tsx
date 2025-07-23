@@ -18,8 +18,7 @@ import {
   SlotFillProvider,
   Button,
   ToolbarGroup,
-  ToolbarButton,
-  TabPanel
+  ToolbarButton
 } from '@wordpress/components';
 import { 
   InterfaceSkeleton,
@@ -81,11 +80,29 @@ function GutenbergEditor({
   const { enableComplementaryArea, disableComplementaryArea } = useDispatch(interfaceStore);
   const { resetBlocks, insertDefaultBlock } = useDispatch('core/block-editor');
   
-  // Enable the inspector by default on first render
-  useEffect(() => {
-    enableComplementaryArea('core', 'edit-post/document');
-  }, [enableComplementaryArea]);
+  const activeArea = useSelect(
+    (select: any) => {
+      const { getActiveComplementaryArea } = select(interfaceStore);
+      return getActiveComplementaryArea('core');
+    },
+    []
+  );
 
+  const isInspectorOpen = useSelect(
+    (select: any) => {
+      const { getActiveComplementaryArea } = select(interfaceStore);
+      const activeArea = getActiveComplementaryArea('core');
+      return activeArea === 'edit-post/document' || activeArea === 'edit-post/block';
+    },
+    []
+  );
+
+  // Enable the inspector by default on first render, but only if no area is already active
+  useEffect(() => {
+    if (!activeArea) {
+      enableComplementaryArea('core', 'edit-post/document');
+    }
+  }, [enableComplementaryArea, activeArea]);
 
   // Ensure the block editor store is properly initialized with our blocks
   useEffect(() => {
@@ -97,15 +114,6 @@ function GutenbergEditor({
       insertDefaultBlock();
     }
   }, [resetBlocks, insertDefaultBlock, blocks]);
-  
-  const isInspectorOpen = useSelect(
-    (select: any) => {
-      const { getActiveComplementaryArea } = select(interfaceStore);
-      const activeArea = getActiveComplementaryArea('core');
-      return activeArea === 'edit-post/document' || activeArea === 'edit-post/block';
-    },
-    []
-  );
 
   // Undo/Redo functionality - memoized to prevent unnecessary rerenders
   const { hasUndo, hasRedo } = useSelect(
@@ -132,15 +140,6 @@ function GutenbergEditor({
   );
 
   const { undo, redo } = useDispatch('core/block-editor');
-
-
-  const activeArea = useSelect(
-    (select: any) => {
-      const { getActiveComplementaryArea } = select(interfaceStore);
-      return getActiveComplementaryArea('core');
-    },
-    []
-  );
 
   const toggleInspector = () => {
     if (isInspectorOpen) {
@@ -364,40 +363,36 @@ function GutenbergEditor({
             sidebar={isInspectorOpen ? (
               <div className="edit-post-sidebar">
                 <div className="edit-post-sidebar__header">
-                  <TabPanel
-                    className="edit-post-sidebar__panel-tabs"
-                    activeClass="is-active"
-                    orientation="horizontal"
-                    tabs={[
-                      {
-                        name: 'document',
-                        title: __('Document'),
-                        className: 'edit-post-sidebar__panel-tab',
-                      },
-                      {
-                        name: 'block',
-                        title: __('Block'),
-                        className: 'edit-post-sidebar__panel-tab',
-                      },
-                    ]}
-                  >
-                    {(tab: { name: string; title: string; className: string }) => (
-                      <div className="edit-post-sidebar__panel-tab-content">
-                        {tab.name === 'document' && (
-                          <DocumentInspector 
-                            title={title}
-                            slug={slug}
-                            excerpt={excerpt}
-                            status={status}
-                            onSlugChange={onSlugChange}
-                            onExcerptChange={onExcerptChange}
-                            onStatusChange={onStatusChange}
-                          />
-                        )}
-                        {tab.name === 'block' && <BlockInspector />}
-                      </div>
-                    )}
-                  </TabPanel>
+                  <div className="edit-post-sidebar__tabs">
+                    <button
+                      className={`edit-post-sidebar__tab ${activeArea === 'edit-post/document' ? 'is-active' : ''}`}
+                      onClick={() => enableComplementaryArea('core', 'edit-post/document')}
+                      type="button"
+                    >
+                      {__('Document')}
+                    </button>
+                    <button
+                      className={`edit-post-sidebar__tab ${activeArea === 'edit-post/block' ? 'is-active' : ''}`}
+                      onClick={() => enableComplementaryArea('core', 'edit-post/block')}
+                      type="button"
+                    >
+                      {__('Block')}
+                    </button>
+                  </div>
+                </div>
+                <div className="edit-post-sidebar__panel-tab-content">
+                  {activeArea === 'edit-post/document' && (
+                    <DocumentInspector 
+                      title={title}
+                      slug={slug}
+                      excerpt={excerpt}
+                      status={status}
+                      onSlugChange={onSlugChange}
+                      onExcerptChange={onExcerptChange}
+                      onStatusChange={onStatusChange}
+                    />
+                  )}
+                  {activeArea === 'edit-post/block' && <BlockInspector />}
                 </div>
               </div>
             ) : null}
