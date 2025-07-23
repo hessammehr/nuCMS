@@ -43,6 +43,7 @@ interface GutenbergEditorProps {
   onSlugChange?: (slug: string) => void;
   onExcerptChange?: (excerpt: string) => void;
   onStatusChange?: (status: string) => void;
+  onExit?: () => void;
 }
 
 function GutenbergEditor({ 
@@ -57,7 +58,8 @@ function GutenbergEditor({
   status, 
   onSlugChange, 
   onExcerptChange, 
-  onStatusChange 
+  onStatusChange,
+  onExit
 }: GutenbergEditorProps) {
   const [blocks, setBlocks] = useState(() => {
     try {
@@ -264,6 +266,16 @@ function GutenbergEditor({
             header={
               <div className="edit-post-header">
                 <div className="edit-post-header__toolbar">
+                  {onExit && (
+                    <ToolbarGroup>
+                      <ToolbarButton
+                        icon={close}
+                        label={__('Exit')}
+                        onClick={onExit}
+                        className="edit-post-header__close-button"
+                      />
+                    </ToolbarGroup>
+                  )}
                   <ToolbarGroup>
                     <Inserter
                       position="bottom right"

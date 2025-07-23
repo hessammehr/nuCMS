@@ -109,45 +109,34 @@ function PostEditor() {
   };
 
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h1>{isEditing ? 'Edit Post' : 'Create New Post'}</h1>
-        <button 
-          onClick={() => navigate('/posts')}
-          className="btn btn-secondary"
-        >
-          Back to Posts
-        </button>
-      </div>
-
+    <div className="fullscreen-editor-wrapper">
       {error && (
-        <div className="error-message" style={{ marginBottom: '1rem' }}>
+        <div className="error-message" style={{ position: 'fixed', top: '10px', left: '50%', transform: 'translateX(-50%)', zIndex: 1000, maxWidth: '500px' }}>
           {error}
         </div>
       )}
 
       {success && (
-        <div className="success-message" style={{ marginBottom: '1rem' }}>
+        <div className="success-message" style={{ position: 'fixed', top: '10px', left: '50%', transform: 'translateX(-50%)', zIndex: 1000, maxWidth: '500px' }}>
           {success}
         </div>
       )}
 
-      <div className="editor-container">
-        <GutenbergEditor
-          content={post.content || ''}
-          onChange={(content) => setPost(prev => ({ ...prev, content }))}
-          title={post.title || ''}
-          onTitleChange={handleTitleChange}
-          onSave={handleSaveQuick}
-          saving={saving}
-          slug={post.slug || ''}
-          excerpt={post.excerpt || ''}
-          status={post.status || 'DRAFT'}
-          onSlugChange={(slug) => setPost(prev => ({ ...prev, slug }))}
-          onExcerptChange={(excerpt) => setPost(prev => ({ ...prev, excerpt }))}
-          onStatusChange={(status) => setPost(prev => ({ ...prev, status: status as any }))}
-        />
-      </div>
+      <GutenbergEditor
+        content={post.content || ''}
+        onChange={(content) => setPost(prev => ({ ...prev, content }))}
+        title={post.title || ''}
+        onTitleChange={handleTitleChange}
+        onSave={handleSaveQuick}
+        saving={saving}
+        slug={post.slug || ''}
+        excerpt={post.excerpt || ''}
+        status={post.status || 'DRAFT'}
+        onSlugChange={(slug) => setPost(prev => ({ ...prev, slug }))}
+        onExcerptChange={(excerpt) => setPost(prev => ({ ...prev, excerpt }))}
+        onStatusChange={(status) => setPost(prev => ({ ...prev, status: status as any }))}
+        onExit={() => navigate('/posts')}
+      />
     </div>
   );
 }

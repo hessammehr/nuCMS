@@ -103,91 +103,37 @@ function PageEditor() {
     return <div className="loading">Loading page...</div>;
   }
 
-  return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h1>{isEditing ? 'Edit Page' : 'Create New Page'}</h1>
-        <button 
-          onClick={() => navigate('/pages')}
-          className="btn btn-secondary"
-        >
-          Back to Pages
-        </button>
-      </div>
+  const handleSaveQuick = () => {
+    handleSave(page.status);
+  };
 
+  return (
+    <div className="fullscreen-editor-wrapper">
       {error && (
-        <div className="error-message" style={{ marginBottom: '1rem' }}>
+        <div className="error-message" style={{ position: 'fixed', top: '10px', left: '50%', transform: 'translateX(-50%)', zIndex: 1000, maxWidth: '500px' }}>
           {error}
         </div>
       )}
 
       {success && (
-        <div className="success-message" style={{ marginBottom: '1rem' }}>
+        <div className="success-message" style={{ position: 'fixed', top: '10px', left: '50%', transform: 'translateX(-50%)', zIndex: 1000, maxWidth: '500px' }}>
           {success}
         </div>
       )}
 
-      <div className="editor-container">
-        <div className="editor-header">
-          <input
-            type="text"
-            placeholder="Page title"
-            value={page.title || ''}
-            onChange={(e) => handleTitleChange(e.target.value)}
-            disabled={saving}
-          />
-
-          <div className="editor-meta">
-            <div style={{ flex: 1 }}>
-              <label>Slug:</label>
-              <input
-                type="text"
-                value={page.slug || ''}
-                onChange={(e) => setPage(prev => ({ ...prev, slug: e.target.value }))}
-                disabled={saving}
-                style={{ width: '100%' }}
-              />
-            </div>
-            
-            <div>
-              <label>Status:</label>
-              <select
-                value={page.status || 'DRAFT'}
-                onChange={(e) => setPage(prev => ({ ...prev, status: e.target.value as any }))}
-                disabled={saving}
-              >
-                <option value="DRAFT">Draft</option>
-                <option value="PUBLISHED">Published</option>
-                <option value="PRIVATE">Private</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="editor-actions">
-            <button 
-              onClick={() => handleSave('DRAFT')}
-              disabled={saving}
-              className="btn btn-secondary"
-            >
-              {saving ? 'Saving...' : 'Save Draft'}
-            </button>
-            <button 
-              onClick={() => handleSave('PUBLISHED')}
-              disabled={saving}
-              className="btn"
-            >
-              {saving ? 'Publishing...' : 'Publish'}
-            </button>
-          </div>
-        </div>
-
-        <div className="editor-content">
-          <GutenbergEditor
-            content={page.content || ''}
-            onChange={(content) => setPage(prev => ({ ...prev, content }))}
-          />
-        </div>
-      </div>
+      <GutenbergEditor
+        content={page.content || ''}
+        onChange={(content) => setPage(prev => ({ ...prev, content }))}
+        title={page.title || ''}
+        onTitleChange={handleTitleChange}
+        onSave={handleSaveQuick}
+        saving={saving}
+        slug={page.slug || ''}
+        status={page.status || 'DRAFT'}
+        onSlugChange={(slug) => setPage(prev => ({ ...prev, slug }))}
+        onStatusChange={(status) => setPage(prev => ({ ...prev, status: status as any }))}
+        onExit={() => navigate('/pages')}
+      />
     </div>
   );
 }
