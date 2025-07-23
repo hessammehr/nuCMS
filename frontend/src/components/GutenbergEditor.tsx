@@ -354,14 +354,6 @@ function GutenbergEditor({
                 <TabPanel
                   className="edit-post-sidebar__panel-tabs"
                   activeClass="is-active"
-                  initialTabName={activeArea === 'edit-post/block' ? 'block' : 'document'}
-                  onSelect={(tabName) => {
-                    if (tabName === 'document') {
-                      enableComplementaryArea('core', 'edit-post/document');
-                    } else if (tabName === 'block') {
-                      enableComplementaryArea('core', 'edit-post/block');
-                    }
-                  }}
                   tabs={[
                     {
                       name: 'document',
