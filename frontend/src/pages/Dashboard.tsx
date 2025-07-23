@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../utils/api';
 import type { Post, Page } from '@shared/types';
+import { Card, CardBody, CardHeader, Button, Flex, FlexItem, Icon, __experimentalHeading as Heading, __experimentalText as Text } from '@wordpress/components';
+import { postList, page, media, plus, edit } from '@wordpress/icons';
 
 function Dashboard() {
   const [stats, setStats] = useState({
@@ -48,67 +50,152 @@ function Dashboard() {
   }
 
   return (
-    <div>
-      <h1>Dashboard</h1>
+    <div className="wp-dashboard">
+      <div className="wp-dashboard__header">
+        <Heading level={1} className="wp-dashboard__title">
+          Dashboard
+        </Heading>
+      </div>
       
-      <div style={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
-        gap: '1.5rem', 
-        marginBottom: '2rem' 
-      }}>
-        <div className="post-card">
-          <h3>{stats.posts}</h3>
-          <p>Posts</p>
-          <Link to="/posts" className="btn">Manage Posts</Link>
-        </div>
+      <div className="wp-dashboard__stats">
+        <Card className="wp-stat-card">
+          <CardBody>
+            <Flex direction="column" align="center" gap={2}>
+              <Icon icon={postList} size={32} className="wp-stat-card__icon" />
+              <Heading level={3} className="wp-stat-card__number">
+                {stats.posts}
+              </Heading>
+              <Text className="wp-stat-card__label">Posts</Text>
+              <Button 
+                variant="primary" 
+                size="small"
+                as={Link}
+                to="/posts"
+                className="wp-stat-card__button"
+              >
+                Manage Posts
+              </Button>
+            </Flex>
+          </CardBody>
+        </Card>
         
-        <div className="post-card">
-          <h3>{stats.pages}</h3>
-          <p>Pages</p>
-          <Link to="/pages" className="btn">Manage Pages</Link>
-        </div>
+        <Card className="wp-stat-card">
+          <CardBody>
+            <Flex direction="column" align="center" gap={2}>
+              <Icon icon={page} size={32} className="wp-stat-card__icon" />
+              <Heading level={3} className="wp-stat-card__number">
+                {stats.pages}
+              </Heading>
+              <Text className="wp-stat-card__label">Pages</Text>
+              <Button 
+                variant="primary" 
+                size="small"
+                as={Link}
+                to="/pages"
+                className="wp-stat-card__button"
+              >
+                Manage Pages
+              </Button>
+            </Flex>
+          </CardBody>
+        </Card>
         
-        <div className="post-card">
-          <h3>{stats.media}</h3>
-          <p>Media Files</p>
-          <Link to="/media" className="btn">Manage Media</Link>
-        </div>
+        <Card className="wp-stat-card">
+          <CardBody>
+            <Flex direction="column" align="center" gap={2}>
+              <Icon icon={media} size={32} className="wp-stat-card__icon" />
+              <Heading level={3} className="wp-stat-card__number">
+                {stats.media}
+              </Heading>
+              <Text className="wp-stat-card__label">Media Files</Text>
+              <Button 
+                variant="primary" 
+                size="small"
+                as={Link}
+                to="/media"
+                className="wp-stat-card__button"
+              >
+                Manage Media
+              </Button>
+            </Flex>
+          </CardBody>
+        </Card>
       </div>
 
-      <div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-          <h2>Recent Posts</h2>
-          <Link to="/posts/new" className="btn">Create New Post</Link>
-        </div>
-        
-        {recentPosts.length > 0 ? (
-          <div className="posts-grid">
-            {recentPosts.map(post => (
-              <div key={post.id} className="post-card">
-                <h3>{post.title}</h3>
-                <p>{post.excerpt || 'No excerpt available'}</p>
-                <div className="post-meta">
-                  <span>Status: {post.status}</span>
-                  <span> • </span>
-                  <span>By {post.author?.username}</span>
-                  <span> • </span>
-                  <span>{new Date(post.createdAt).toLocaleDateString()}</span>
-                </div>
-                <div className="post-actions">
-                  <Link to={`/posts/${post.id}/edit`} className="btn btn-secondary">
-                    Edit
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="post-card">
-            <p>No posts yet. <Link to="/posts/new">Create your first post</Link>!</p>
-          </div>
-        )}
-      </div>
+      <Card className="wp-dashboard__recent-posts">
+        <CardHeader>
+          <Flex justify="space-between" align="center">
+            <Heading level={2}>Recent Posts</Heading>
+            <Button 
+              variant="primary"
+              icon={plus}
+              as={Link}
+              to="/posts/new"
+            >
+              Create New Post
+            </Button>
+          </Flex>
+        </CardHeader>
+        <CardBody>
+          {recentPosts.length > 0 ? (
+            <div className="wp-dashboard__post-list">
+              {recentPosts.map(post => (
+                <Card key={post.id} className="wp-post-summary">
+                  <CardBody>
+                    <Flex direction="column" gap={3}>
+                      <Heading level={4} className="wp-post-summary__title">
+                        {post.title}
+                      </Heading>
+                      <Text className="wp-post-summary__excerpt">
+                        {post.excerpt || 'No excerpt available'}
+                      </Text>
+                      <Flex className="wp-post-summary__meta">
+                        <Text size="small" className="wp-post-summary__status">
+                          Status: <strong>{post.status}</strong>
+                        </Text>
+                        <Text size="small" className="wp-post-summary__author">
+                          By {post.author?.username}
+                        </Text>
+                        <Text size="small" className="wp-post-summary__date">
+                          {new Date(post.createdAt).toLocaleDateString()}
+                        </Text>
+                      </Flex>
+                      <Flex className="wp-post-summary__actions">
+                        <Button 
+                          variant="secondary"
+                          size="small"
+                          icon={edit}
+                          as={Link}
+                          to={`/posts/${post.id}/edit`}
+                        >
+                          Edit
+                        </Button>
+                      </Flex>
+                    </Flex>
+                  </CardBody>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <Card className="wp-dashboard__empty-state">
+              <CardBody>
+                <Flex direction="column" align="center" gap={4}>
+                  <Icon icon={postList} size={48} className="wp-empty-state__icon" />
+                  <Text>No posts yet.</Text>
+                  <Button 
+                    variant="primary"
+                    icon={plus}
+                    as={Link}
+                    to="/posts/new"
+                  >
+                    Create your first post
+                  </Button>
+                </Flex>
+              </CardBody>
+            </Card>
+          )}
+        </CardBody>
+      </Card>
     </div>
   );
 }
