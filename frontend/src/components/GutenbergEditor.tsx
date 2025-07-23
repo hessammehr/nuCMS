@@ -363,40 +363,42 @@ function GutenbergEditor({
             }
             sidebar={isInspectorOpen ? (
               <div className="edit-post-sidebar">
-                <TabPanel
-                  className="edit-post-sidebar__panel-tabs"
-                  activeClass="is-active"
-                  orientation="horizontal"
-                  tabs={[
-                    {
-                      name: 'document',
-                      title: __('Document'),
-                      className: 'edit-post-sidebar__panel-tab',
-                    },
-                    {
-                      name: 'block',
-                      title: __('Block'),
-                      className: 'edit-post-sidebar__panel-tab',
-                    },
-                  ]}
-                >
-                  {(tab: { name: string; title: string; className: string }) => (
-                    <div className="edit-post-sidebar__panel-tab-content">
-                      {tab.name === 'document' && (
-                        <DocumentInspector 
-                          title={title}
-                          slug={slug}
-                          excerpt={excerpt}
-                          status={status}
-                          onSlugChange={onSlugChange}
-                          onExcerptChange={onExcerptChange}
-                          onStatusChange={onStatusChange}
-                        />
-                      )}
-                      {tab.name === 'block' && <BlockInspector />}
-                    </div>
-                  )}
-                </TabPanel>
+                <div className="edit-post-sidebar__header">
+                  <TabPanel
+                    className="edit-post-sidebar__panel-tabs"
+                    activeClass="is-active"
+                    orientation="horizontal"
+                    tabs={[
+                      {
+                        name: 'document',
+                        title: __('Document'),
+                        className: 'edit-post-sidebar__panel-tab',
+                      },
+                      {
+                        name: 'block',
+                        title: __('Block'),
+                        className: 'edit-post-sidebar__panel-tab',
+                      },
+                    ]}
+                  >
+                    {(tab: { name: string; title: string; className: string }) => (
+                      <div className="edit-post-sidebar__panel-tab-content">
+                        {tab.name === 'document' && (
+                          <DocumentInspector 
+                            title={title}
+                            slug={slug}
+                            excerpt={excerpt}
+                            status={status}
+                            onSlugChange={onSlugChange}
+                            onExcerptChange={onExcerptChange}
+                            onStatusChange={onStatusChange}
+                          />
+                        )}
+                        {tab.name === 'block' && <BlockInspector />}
+                      </div>
+                    )}
+                  </TabPanel>
+                </div>
               </div>
             ) : null}
             content={
