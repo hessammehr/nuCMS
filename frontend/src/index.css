@@ -188,6 +188,8 @@ body {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
+  height: calc(100vh - 60px);
+  max-height: calc(100vh - 60px);
 }
 
 .edit-post-visual-editor__post-title-wrapper {
@@ -197,7 +199,7 @@ body {
 }
 
 .block-editor-writing-flow {
-  padding: 0 32px 50vh;
+  padding: 0 32px 100px;
 }
 
 /* Post title styling following WordPress conventions */
