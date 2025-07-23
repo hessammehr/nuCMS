@@ -83,8 +83,4 @@
   flex-shrink: 0;
 }
 
-.edit-post-sidebar__panel-tab-content {
-  flex: 1;
-  overflow-y: auto;
-  height: 0; /* Force flex child to respect parent height */
-}
+/* Tab content styles moved to index.css to avoid conflicts */
