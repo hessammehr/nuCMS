@@ -40,16 +40,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
           } else {
             localStorage.removeItem('nucms_token');
             delete api.defaults.headers.common['Authorization'];
+            setUser(null);
           }
         })
         .catch(() => {
           localStorage.removeItem('nucms_token');
           delete api.defaults.headers.common['Authorization'];
+          setUser(null);
         })
         .finally(() => {
           setLoading(false);
         });
     } else {
+      setUser(null);
       setLoading(false);
     }
   }, []);
