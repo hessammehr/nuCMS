@@ -425,7 +425,6 @@ function GutenbergEditor({
                       <EditorStyles styles={[]} />
                       <BlockSelectionClearer className="block-editor-writing-flow">
                         <BlockEditorKeyboardShortcuts />
-                        <BlockToolbar hideDragHandle />
                         <WritingFlow>
                           <ObserveTyping>
                             <BlockList />
@@ -440,6 +439,7 @@ function GutenbergEditor({
             footer={<BlockBreadcrumb />}
           />
           <BlockEditorKeyboardShortcuts.Register />
+          <BlockToolbar />
           <CommandMenu />
           <Popover.Slot />
         </BlockEditorProvider>
