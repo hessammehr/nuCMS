@@ -9,6 +9,7 @@ import { authRoutes } from './routes/auth';
 import { postRoutes } from './routes/posts';
 import { pageRoutes } from './routes/pages';
 import { mediaRoutes } from './routes/media';
+import { userRoutes } from './routes/users';
 import { prisma } from './lib/prisma';
 import { createAdminUser } from './lib/setup';
 
@@ -48,6 +49,7 @@ fastify.register(authRoutes, { prefix: '/api/auth' });
 fastify.register(postRoutes, { prefix: '/api/posts' });
 fastify.register(pageRoutes, { prefix: '/api/pages' });
 fastify.register(mediaRoutes, { prefix: '/api/media' });
+fastify.register(userRoutes, { prefix: '/api/users' });
 
 // Health check
 fastify.get('/api/health', async (request, reply) => {

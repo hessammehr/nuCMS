@@ -9,6 +9,7 @@ import PostEditor from './pages/PostEditor';
 import Pages from './pages/Pages';
 import PageEditor from './pages/PageEditor';
 import Media from './pages/Media';
+import Users from './pages/Users';
 
 function App() {
   const { user, loading } = useAuth();
@@ -38,6 +39,7 @@ function App() {
           <Route path="/pages/new" element={<PageEditor />} />
           <Route path="/pages/:id/edit" element={<PageEditor />} />
           <Route path="/media" element={<Media />} />
+          <Route path="/users" element={<Users />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>

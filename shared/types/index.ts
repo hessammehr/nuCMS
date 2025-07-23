@@ -84,6 +84,18 @@ export interface UpdatePageRequest extends Partial<CreatePageRequest> {
   id: number;
 }
 
+export interface CreateUserRequest {
+  email: string;
+  username: string;
+  password: string;
+  role?: 'ADMIN' | 'EDITOR' | 'AUTHOR';
+}
+
+export interface UpdateUserRequest extends Partial<Omit<CreateUserRequest, 'password'>> {
+  id: number;
+  password?: string;
+}
+
 // Gutenberg Block types
 export interface GutenbergBlock {
   blockName: string;
