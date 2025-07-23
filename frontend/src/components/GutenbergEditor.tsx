@@ -27,7 +27,7 @@ import {
 } from '@wordpress/interface';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
-import { cog, close, undo as undoIcon, redo as redoIcon, plus, listView, wordpress } from '@wordpress/icons';
+import { cog, close, undo as undoIcon, redo as redoIcon, plus, listView } from '@wordpress/icons';
 import { CommandMenu, useCommand } from '@wordpress/commands';
 import DocumentInspector from './DocumentInspector';
 import { createMediaUpload, createMediaSelect } from '../utils/media';
@@ -307,11 +307,12 @@ function GutenbergEditor({
                 <div className="edit-post-header__toolbar">
                   <ToolbarGroup className="edit-post-header__toolbar-left">
                     <ToolbarButton
-                      icon={wordpress}
                       label={__('nuCMS Dashboard')}
                       className="edit-post-header__logo"
                       onClick={onExit}
-                    />
+                    >
+                      ν
+                    </ToolbarButton>
                     <div className="edit-post-header__inserter">
                       <Inserter
                         position="bottom right"

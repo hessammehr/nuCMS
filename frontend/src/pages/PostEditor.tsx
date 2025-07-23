@@ -20,6 +20,8 @@ function PostEditor() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [originalPost, setOriginalPost] = useState<Partial<Post> | null>(null);
 
   useEffect(() => {
     if (isEditing && id) {
@@ -27,11 +29,31 @@ function PostEditor() {
     }
   }, [id, isEditing]);
 
+  // Track unsaved changes
+  useEffect(() => {
+    if (originalPost) {
+      const hasChanges = (
+        post.title !== originalPost.title ||
+        post.content !== originalPost.content ||
+        post.excerpt !== originalPost.excerpt ||
+        post.slug !== originalPost.slug ||
+        post.status !== originalPost.status
+      );
+      setHasUnsavedChanges(hasChanges);
+    } else if (!isEditing) {
+      // For new posts, check if any content has been added
+      const hasContent = post.title || post.content || post.excerpt;
+      setHasUnsavedChanges(Boolean(hasContent));
+    }
+  }, [post, originalPost, isEditing]);
+
   const fetchPost = async (postId: number) => {
     try {
       const response = await api.get(`/posts/${postId}`);
       if (response.data.success) {
         setPost(response.data.data);
+        setOriginalPost(response.data.data);
+        setHasUnsavedChanges(false);
       } else {
         setError(response.data.error || 'Failed to fetch post');
       }
@@ -85,6 +107,8 @@ function PostEditor() {
       if (response.data.success) {
         setSuccess(isEditing ? 'Post updated successfully!' : 'Post created successfully!');
         setPost(response.data.data);
+        setOriginalPost(response.data.data);
+        setHasUnsavedChanges(false);
         
         if (!isEditing) {
           // Redirect to edit mode after creating
@@ -106,6 +130,18 @@ function PostEditor() {
 
   const handleSaveQuick = () => {
     handleSave(post.status);
+  };
+
+  const handleExit = () => {
+    if (hasUnsavedChanges) {
+      const shouldDiscard = confirm(
+        'You have unsaved changes. Are you sure you want to leave? Your changes will be lost.'
+      );
+      if (!shouldDiscard) {
+        return;
+      }
+    }
+    navigate('/posts');
   };
 
   return (
@@ -135,7 +171,7 @@ function PostEditor() {
         onSlugChange={(slug) => setPost(prev => ({ ...prev, slug }))}
         onExcerptChange={(excerpt) => setPost(prev => ({ ...prev, excerpt }))}
         onStatusChange={(status) => setPost(prev => ({ ...prev, status: status as any }))}
-        onExit={() => navigate('/posts')}
+        onExit={handleExit}
       />
     </div>
   );
