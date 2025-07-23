@@ -567,6 +567,9 @@ body {
   height: 100vh !important;
   width: 100vw !important;
   overflow: hidden !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
 }
 
 .interface-interface-skeleton__header {
