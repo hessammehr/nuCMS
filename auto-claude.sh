@@ -15,6 +15,6 @@ while true; do
     else
         echo "$(date): claude-prompt.txt not found in $PROJECT_DIR"
     fi
-    
-    sleep 3600  # 1 hour (3600 seconds)
+
+    sleep 1800
 done
