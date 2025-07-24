@@ -52,9 +52,24 @@ export function initializeWordPress() {
       'nucms/fix-media-upload',
       (BlockEdit: any) => {
         return (props: any) => {
-          // For image blocks, ensure media upload is available
+          // For image blocks, ensure media upload is available and add media library button
           if (props.name === 'core/image') {
             console.log('🎨 Rendering image block with enhanced media support');
+            
+            // Enhance props with media library support
+            const enhancedProps = {
+              ...props,
+              attributes: {
+                ...props.attributes,
+              },
+              // Add media upload and select capabilities
+              mediaUpload: createMediaUpload(),
+              mediaSelect: createMediaSelect(),
+              // Ensure hasUploadPermissions is true to show media buttons
+              hasUploadPermissions: true,
+            };
+            
+            return React.createElement(BlockEdit, enhancedProps);
           }
           return React.createElement(BlockEdit, props);
         };
@@ -76,26 +91,50 @@ export function initializeWordPress() {
         media: {
           upload: createMediaUpload(),
           select: createMediaSelect(),
-          // Add media library functionality
+          // Add proper WordPress media frame for image blocks
           view: {
             MediaFrame: {
-              Select: function() {
-                console.log('📚 WordPress MediaFrame.Select called');
+              Select: function(options = {}) {
+                console.log('📚 WordPress MediaFrame.Select called with options:', options);
                 return {
                   open: () => {
                     console.log('📚 MediaFrame.Select.open called');
                     const mediaSelect = createMediaSelect();
                     mediaSelect({
-                      allowedTypes: ['image/*'],
-                      multiple: false,
+                      allowedTypes: options.allowedTypes || ['image/*'],
+                      multiple: options.multiple || false,
                       onSelect: (media) => {
                         console.log('📚 Media selected via MediaFrame:', media);
+                        if (options.onSelect) {
+                          options.onSelect(media);
+                        }
                       }
                     });
                   }
                 };
               }
             }
+          },
+          // WordPress.com-style media function expected by some blocks
+          frame: function(options = {}) {
+            console.log('📚 WordPress wp.media.frame called with options:', options);
+            const frame = {
+              open: () => {
+                console.log('📚 Media frame open called');
+                const mediaSelect = createMediaSelect();
+                mediaSelect({
+                  allowedTypes: options.allowedTypes || ['image/*'],
+                  multiple: options.multiple || false,
+                  onSelect: (media) => {
+                    console.log('📚 Media selected via frame:', media);
+                    if (options.onSelect) {
+                      options.onSelect(media);
+                    }
+                  }
+                });
+              }
+            };
+            return frame;
           }
         },
       };
