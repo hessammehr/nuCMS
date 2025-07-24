@@ -164,6 +164,9 @@ function GutenbergEditor({
     mediaUpload: createMediaUpload(),
     // Also set hasUploadPermissions to true
     hasUploadPermissions: true,
+    // Add error boundary settings
+    __experimentalBlockManagement: false,
+    __experimentalBlockDirectory: false,
     colors: [
       { name: 'Black', slug: 'black', color: '#000000' },
       { name: 'Cyan bluish gray', slug: 'cyan-bluish-gray', color: '#abb8c3' },

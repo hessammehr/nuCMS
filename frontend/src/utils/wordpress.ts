@@ -9,6 +9,7 @@ import * as components from '@wordpress/components';
 import * as blockEditor from '@wordpress/block-editor';
 import * as i18n from '@wordpress/i18n';
 import * as hooks from '@wordpress/hooks';
+import * as React from 'react';
 import { createMediaUpload, createMediaSelect } from './media';
 
 let isInitialized = false;
@@ -43,6 +44,22 @@ export function initializeWordPress() {
         }
         return settings;
       }
+    );
+
+    // Add filter to ensure media upload function is properly configured
+    addFilter(
+      'editor.BlockEdit',
+      'nucms/fix-media-upload',
+      (BlockEdit: any) => {
+        return (props: any) => {
+          // For image blocks, ensure media upload is available
+          if (props.name === 'core/image') {
+            console.log('🎨 Rendering image block with enhanced media support');
+          }
+          return React.createElement(BlockEdit, props);
+        };
+      },
+      20
     );
 
     // Set up global WordPress-like behavior

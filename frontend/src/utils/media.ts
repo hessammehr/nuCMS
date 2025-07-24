@@ -111,67 +111,97 @@ export function createMediaUpload() {
     onError?: (error: string) => void;
   }) => {
     console.log('🔄 createMediaUpload called with options:', options);
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.multiple = options.multiple || false;
     
-    if (options.allowedTypes) {
-      input.accept = options.allowedTypes.join(',');
-    }
-
-    input.onchange = async (event) => {
-      const files = (event.target as HTMLInputElement).files;
-      if (!files || files.length === 0) return;
-
-      console.log('🔄 Files selected for upload:', files.length);
-
-      const uploadPromises = Array.from(files).map(async (file) => {
-        console.log('🔄 Uploading file:', file.name, file.type, file.size);
-        const result = await uploadMedia(file);
-        
-        if (result.success && result.data) {
-          return {
-            id: result.data.id,
-            url: result.data.url,
-            alt: result.data.alt || '',
-            caption: result.data.caption || '',
-            title: result.data.originalName,
-            filename: result.data.filename,
-            mime: result.data.mimeType,
-            type: result.data.mimeType.startsWith('image/') ? 'image' : 'file',
-            subtype: result.data.mimeType.split('/')[1],
-            sizes: result.data.mimeType.startsWith('image/') ? {
-              full: {
-                url: result.data.url,
-                width: 0, // We don't have dimensions yet
-                height: 0,
-              }
-            } : undefined,
-          };
-        } else {
-          if (options.onError) {
-            options.onError(result.error || 'Upload failed');
-          }
-          return null;
-        }
-      });
-
-      try {
-        const uploadedMedia = await Promise.all(uploadPromises);
-        const validMedia = uploadedMedia.filter(media => media !== null);
-        
-        if (validMedia.length > 0) {
-          options.onSelect(options.multiple ? validMedia : validMedia[0]);
-        }
-      } catch (error) {
-        console.error('Upload error:', error);
-        if (options.onError) {
-          options.onError('Upload failed');
-        }
+    try {
+      console.log('🔧 Creating file input element');
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.multiple = options.multiple || false;
+      
+      if (options.allowedTypes) {
+        input.accept = options.allowedTypes.join(',');
+        console.log('🔧 Set accept types:', input.accept);
       }
-    };
+      
+      console.log('🔧 Input element created:', input);
 
-    input.click();
+      input.onchange = async (event) => {
+        console.log('📄 Input onchange event triggered');
+        try {
+          const files = (event.target as HTMLInputElement).files;
+          console.log('📄 Files from input:', files, files?.length);
+          if (!files || files.length === 0) {
+            console.log('❌ No files selected or files is null');
+            return;
+          }
+
+          console.log('🔄 Files selected for upload:', files.length);
+
+          const uploadPromises = Array.from(files).map(async (file) => {
+            console.log('🔄 Uploading file:', file.name, file.type, file.size);
+            const result = await uploadMedia(file);
+            
+            if (result.success && result.data) {
+              return {
+                id: result.data.id,
+                url: result.data.url,
+                alt: result.data.alt || '',
+                caption: result.data.caption || '',
+                title: result.data.originalName,
+                filename: result.data.filename,
+                mime: result.data.mimeType,
+                type: result.data.mimeType.startsWith('image/') ? 'image' : 'file',
+                subtype: result.data.mimeType.split('/')[1],
+                sizes: result.data.mimeType.startsWith('image/') ? {
+                  full: {
+                    url: result.data.url,
+                    width: 0, // We don't have dimensions yet
+                    height: 0,
+                  }
+                } : undefined,
+              };
+            } else {
+              console.error('Upload failed for file:', file.name, result.error);
+              if (options.onError) {
+                options.onError(result.error || 'Upload failed');
+              }
+              return null;
+            }
+          });
+
+          const uploadedMedia = await Promise.all(uploadPromises);
+          const validMedia = uploadedMedia.filter(media => media !== null);
+          
+          if (validMedia.length > 0) {
+            console.log('✅ Upload successful, calling onSelect with:', validMedia);
+            options.onSelect(options.multiple ? validMedia : validMedia[0]);
+          } else {
+            console.error('❌ No valid media uploaded');
+            if (options.onError) {
+              options.onError('No files were uploaded successfully');
+            }
+          }
+        } catch (error) {
+          console.error('Upload process error:', error);
+          if (options.onError) {
+            options.onError('Upload process failed');
+          }
+        }
+      };
+
+      // Use a timeout to avoid potential timing issues
+      setTimeout(() => {
+        console.log('🖱️ Attempting to click input element');
+        input.click();
+        console.log('🖱️ Input click completed');
+      }, 100);
+      
+    } catch (error) {
+      console.error('Media upload setup error:', error);
+      if (options.onError) {
+        options.onError('Upload setup failed');
+      }
+    }
   };
 }
 
