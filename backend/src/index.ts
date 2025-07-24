@@ -2,8 +2,6 @@ import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
 import multipart from '@fastify/multipart';
-import staticFiles from '@fastify/static';
-import path from 'path';
 import './types';
 import { authRoutes } from './routes/auth';
 import { postRoutes } from './routes/posts';
@@ -29,11 +27,7 @@ fastify.register(jwt, {
 
 fastify.register(multipart);
 
-// Serve static files (uploads)
-fastify.register(staticFiles, {
-  root: path.join(__dirname, '../uploads'),
-  prefix: '/uploads/'
-});
+// Static file serving removed - files now served from database via /api/media/file/:filename
 
 // Auth decorator
 fastify.decorate('authenticate', async function(request: any, reply: any) {
