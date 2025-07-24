@@ -15,11 +15,19 @@ function Users() {
   const [roleFilter, setRoleFilter] = useState('');
   const [search, setSearch] = useState('');
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingUser, setEditingUser] = useState<User | null>(null);
   const [createUserData, setCreateUserData] = useState<CreateUserRequest>({
     email: '',
     username: '',
     password: '',
     role: 'EDITOR'
+  });
+  const [editUserData, setEditUserData] = useState({
+    email: '',
+    username: '',
+    password: '',
+    role: 'EDITOR' as 'ADMIN' | 'EDITOR' | 'AUTHOR'
   });
 
   const fetchUsers = async (page = 1) => {
@@ -71,6 +79,40 @@ function Users() {
       }
     } catch (err: any) {
       setError(err.response?.data?.error || 'Failed to create user');
+    }
+  };
+
+  const handleEditUser = async () => {
+    if (!editingUser) return;
+    
+    try {
+      const updateData: any = {
+        email: editUserData.email,
+        username: editUserData.username,
+        role: editUserData.role
+      };
+      
+      // Only include password if it's not empty
+      if (editUserData.password.trim()) {
+        updateData.password = editUserData.password;
+      }
+
+      const response = await api.put(`/users/${editingUser.id}`, updateData);
+      if (response.data.success) {
+        setShowEditModal(false);
+        setEditingUser(null);
+        setEditUserData({
+          email: '',
+          username: '',
+          password: '',
+          role: 'EDITOR'
+        });
+        fetchUsers(currentPage);
+      } else {
+        setError(response.data.error || 'Failed to update user');
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.error || 'Failed to update user');
     }
   };
 
@@ -217,8 +259,14 @@ function Users() {
                           size="small"
                           icon={edit}
                           onClick={() => {
-                            // TODO: Implement edit user modal
-                            alert('Edit user functionality coming soon!');
+                            setEditingUser(user);
+                            setEditUserData({
+                              email: user.email,
+                              username: user.username,
+                              password: '',
+                              role: user.role
+                            });
+                            setShowEditModal(true);
                           }}
                         >
                           Edit
@@ -324,6 +372,77 @@ function Users() {
                   disabled={!createUserData.username || !createUserData.email || !createUserData.password}
                 >
                   Create User
+                </Button>
+              </div>
+            </PanelBody>
+          </Panel>
+        </Modal>
+      )}
+
+      {showEditModal && editingUser && (
+        <Modal
+          title={`Edit User: ${editingUser.username}`}
+          onRequestClose={() => {
+            setShowEditModal(false);
+            setEditingUser(null);
+          }}
+          size="medium"
+        >
+          <Panel>
+            <PanelBody>
+              <TextControl
+                label="Username"
+                value={editUserData.username}
+                onChange={(value) => setEditUserData(prev => ({ ...prev, username: value || '' }))}
+                required
+              />
+              
+              <TextControl
+                label="Email"
+                type="email"
+                value={editUserData.email}
+                onChange={(value) => setEditUserData(prev => ({ ...prev, email: value || '' }))}
+                required
+              />
+              
+              <TextControl
+                label="Password"
+                type="password"
+                value={editUserData.password}
+                onChange={(value) => setEditUserData(prev => ({ ...prev, password: value || '' }))}
+                help="Leave empty to keep current password"
+              />
+              
+              <SelectControl
+                label="Role"
+                value={editUserData.role}
+                options={[
+                  { label: 'Author', value: 'AUTHOR' },
+                  { label: 'Editor', value: 'EDITOR' },
+                  { label: 'Admin', value: 'ADMIN' }
+                ]}
+                onChange={(value) => setEditUserData(prev => ({ 
+                  ...prev, 
+                  role: (value as 'ADMIN' | 'EDITOR' | 'AUTHOR') || 'EDITOR' 
+                }))}
+              />
+              
+              <div style={{ marginTop: '20px', display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+                <Button
+                  variant="tertiary"
+                  onClick={() => {
+                    setShowEditModal(false);
+                    setEditingUser(null);
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="primary"
+                  onClick={handleEditUser}
+                  disabled={!editUserData.username || !editUserData.email}
+                >
+                  Update User
                 </Button>
               </div>
             </PanelBody>
