@@ -1224,6 +1224,201 @@ body {
 
 /* Responsive design */
 /* WordPress Admin Page Styles */
+.wp-admin-page {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  background: #f0f0f1;
+  min-height: calc(100vh - 32px);
+}
+
+.wp-admin-page__header {
+  margin-bottom: 20px;
+}
+
+.wp-admin-page__title {
+  font-size: 23px !important;
+  font-weight: 400 !important;
+  margin: 0 !important;
+  padding: 9px 0 4px 0 !important;
+  color: #23282d !important;
+}
+
+.wp-admin-filters {
+  background: #fff !important;
+  border: 1px solid #c3c4c7 !important;
+  border-radius: 4px !important;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04) !important;
+  margin-bottom: 20px;
+}
+
+.wp-admin-filters .components-card__body {
+  padding: 20px !important;
+}
+
+.wp-admin-error {
+  background: #fff !important;
+  border: 1px solid #c3c4c7 !important;
+  border-left: 4px solid #d63638 !important;
+  border-radius: 4px !important;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04) !important;
+  margin-bottom: 20px;
+}
+
+.wp-admin-error .components-card__body {
+  padding: 16px 20px !important;
+}
+
+.wp-admin-content-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.wp-admin-content-item {
+  background: #fff !important;
+  border: 1px solid #c3c4c7 !important;
+  border-radius: 4px !important;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04) !important;
+  transition: all 0.1s ease;
+}
+
+.wp-admin-content-item:hover {
+  border-color: #8c8f94 !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.wp-admin-content-item .components-card__body {
+  padding: 20px !important;
+}
+
+.wp-admin-content-item__title {
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  color: #0073aa !important;
+  margin: 0 !important;
+  line-height: 1.3 !important;
+}
+
+.wp-admin-content-item__excerpt {
+  font-size: 14px !important;
+  color: #646970 !important;
+  margin: 0 !important;
+  line-height: 1.4 !important;
+}
+
+.wp-admin-content-item__meta {
+  flex-wrap: wrap;
+}
+
+.wp-admin-content-item__meta .components-text {
+  color: #646970 !important;
+  font-size: 13px !important;
+}
+
+.wp-admin-content-item__status strong {
+  text-transform: uppercase;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 2px;
+  background: #f0f6fc;
+  color: #0073aa;
+}
+
+.wp-admin-content-item__actions {
+  margin-top: 8px;
+}
+
+.wp-admin-empty-state {
+  background: #f9f9f9 !important;
+  border: 2px dashed #c3c4c7 !important;
+  border-radius: 4px !important;
+}
+
+.wp-admin-empty-state .components-card__body {
+  padding: 40px 20px !important;
+}
+
+.wp-admin-empty-state__icon {
+  color: #a7aaad !important;
+}
+
+.wp-admin-pagination {
+  background: #fff !important;
+  border: 1px solid #c3c4c7 !important;
+  border-radius: 4px !important;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04) !important;
+}
+
+.wp-admin-pagination .components-card__body {
+  padding: 16px !important;
+}
+
+.wp-admin-media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.wp-admin-media-item {
+  background: #fff !important;
+  border: 1px solid #c3c4c7 !important;
+  border-radius: 4px !important;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04) !important;
+  transition: all 0.1s ease;
+}
+
+.wp-admin-media-item:hover {
+  border-color: #8c8f94 !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.wp-admin-media-item .components-card__body {
+  padding: 16px !important;
+}
+
+.wp-admin-media-item__preview {
+  margin-bottom: 12px;
+}
+
+.wp-admin-media-item__title {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  color: #1e1e1e !important;
+  margin: 0 !important;
+  line-height: 1.3 !important;
+  word-break: break-word;
+}
+
+.wp-admin-media-item__meta {
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.wp-admin-media-item__meta .components-text {
+  color: #646970 !important;
+  font-size: 12px !important;
+}
+
+.wp-admin-media-item__metadata {
+  margin-bottom: 12px;
+}
+
+.wp-admin-media-item__metadata .components-base-control {
+  margin-bottom: 8px;
+}
+
+.wp-admin-media-item__metadata .components-base-control:last-child {
+  margin-bottom: 0;
+}
+
+.wp-admin-media-item__actions {
+  margin-top: 8px;
+}
+
 .wp-admin-content {
   padding: 20px;
   max-width: 1200px;

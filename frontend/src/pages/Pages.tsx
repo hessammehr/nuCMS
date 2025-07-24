@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../utils/api';
 import type { Page } from '@shared/types';
+import { Card, CardBody, CardHeader, Button, Flex, FlexItem, Icon, __experimentalHeading as Heading, __experimentalText as Text, SearchControl, SelectControl, __experimentalGrid as Grid } from '@wordpress/components';
+import { page, plus, edit, trash } from '@wordpress/icons';
 
 function Pages() {
   const [pages, setPages] = useState<Page[]>([]);
@@ -63,90 +65,142 @@ function Pages() {
   }
 
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h1>Pages</h1>
-        <Link to="/pages/new" className="btn">Create New Page</Link>
+    <div className="wp-admin-page">
+      <div className="wp-admin-page__header">
+        <Flex justify="space-between" align="center">
+          <Heading level={1} className="wp-admin-page__title">
+            Pages
+          </Heading>
+          <Link 
+            to="/pages/new"
+            className="components-button is-primary"
+            style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+          >
+            <Icon icon={plus} />
+            Create New Page
+          </Link>
+        </Flex>
       </div>
 
       {error && (
-        <div className="error-message" style={{ marginBottom: '1rem' }}>
-          {error}
-        </div>
+        <Card className="wp-admin-error">
+          <CardBody>
+            <Text>{error}</Text>
+          </CardBody>
+        </Card>
       )}
 
-      <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', alignItems: 'center' }}>
-        <div>
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            style={{ padding: '0.5rem', border: '1px solid #ddd', borderRadius: '4px' }}
-          >
-            <option value="">All Statuses</option>
-            <option value="PUBLISHED">Published</option>
-            <option value="DRAFT">Draft</option>
-            <option value="PRIVATE">Private</option>
-          </select>
-        </div>
-        
-        <div style={{ flex: 1 }}>
-          <input
-            type="text"
-            placeholder="Search pages..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            style={{ width: '100%', padding: '0.5rem', border: '1px solid #ddd', borderRadius: '4px' }}
-          />
-        </div>
-      </div>
+      <Card className="wp-admin-filters">
+        <CardBody>
+          <Flex gap={4} align="end">
+            <FlexItem>
+              <SelectControl
+                label="Status Filter"
+                value={statusFilter}
+                options={[
+                  { label: 'All Statuses', value: '' },
+                  { label: 'Published', value: 'PUBLISHED' },
+                  { label: 'Draft', value: 'DRAFT' },
+                  { label: 'Private', value: 'PRIVATE' }
+                ]}
+                onChange={(value) => setStatusFilter(value || '')}
+              />
+            </FlexItem>
+            <FlexItem style={{ flex: 1 }}>
+              <SearchControl
+                label="Search pages"
+                value={search}
+                onChange={(value) => setSearch(value)}
+                placeholder="Search pages..."
+              />
+            </FlexItem>
+          </Flex>
+        </CardBody>
+      </Card>
 
       {pages.length > 0 ? (
         <>
-          <div className="posts-grid">
-            {pages.map(page => (
-              <div key={page.id} className="post-card">
-                <h3>{page.title}</h3>
-                <div className="post-meta">
-                  <span>Status: <strong>{page.status}</strong></span>
-                  <span> • </span>
-                  <span>By {page.author?.username}</span>
-                  <span> • </span>
-                  <span>{new Date(page.createdAt).toLocaleDateString()}</span>
-                </div>
-                <div className="post-actions">
-                  <Link to={`/pages/${page.id}/edit`} className="btn btn-secondary">
-                    Edit
-                  </Link>
-                  <button 
-                    onClick={() => handleDelete(page.id)}
-                    className="btn btn-danger"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
+          <div className="wp-admin-content-grid">
+            {pages.map(pageItem => (
+              <Card key={pageItem.id} className="wp-admin-content-item">
+                <CardBody>
+                  <Flex direction="column" gap={3}>
+                    <Heading level={3} className="wp-admin-content-item__title">
+                      {pageItem.title}
+                    </Heading>
+                    <Flex className="wp-admin-content-item__meta" gap={3}>
+                      <Text size="small" className="wp-admin-content-item__status">
+                        Status: <strong>{pageItem.status}</strong>
+                      </Text>
+                      <Text size="small" className="wp-admin-content-item__author">
+                        By {pageItem.author?.username}
+                      </Text>
+                      <Text size="small" className="wp-admin-content-item__date">
+                        {new Date(pageItem.createdAt).toLocaleDateString()}
+                      </Text>
+                    </Flex>
+                    <Flex className="wp-admin-content-item__actions" gap={2}>
+                      <Link 
+                        to={`/pages/${pageItem.id}/edit`}
+                        className="components-button is-secondary is-small"
+                        style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                      >
+                        <Icon icon={edit} />
+                        Edit
+                      </Link>
+                      <Button 
+                        variant="secondary"
+                        size="small"
+                        isDestructive
+                        onClick={() => handleDelete(pageItem.id)}
+                      >
+                        <Icon icon={trash} />
+                        Delete
+                      </Button>
+                    </Flex>
+                  </Flex>
+                </CardBody>
+              </Card>
             ))}
           </div>
 
           {totalPages > 1 && (
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginTop: '2rem' }}>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                <button
-                  key={page}
-                  onClick={() => fetchPages(page)}
-                  className={`btn ${page === currentPage ? '' : 'btn-secondary'}`}
-                  disabled={loading}
-                >
-                  {page}
-                </button>
-              ))}
-            </div>
+            <Card className="wp-admin-pagination">
+              <CardBody>
+                <Flex justify="center" gap={2}>
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNum => (
+                    <Button
+                      key={pageNum}
+                      variant={pageNum === currentPage ? "primary" : "secondary"}
+                      size="small"
+                      onClick={() => fetchPages(pageNum)}
+                      disabled={loading}
+                    >
+                      {pageNum}
+                    </Button>
+                  ))}
+                </Flex>
+              </CardBody>
+            </Card>
           )}
         </>
       ) : (
-        <div className="post-card">
-          <p>No pages found. <Link to="/pages/new">Create your first page</Link>!</p>
-        </div>
+        <Card className="wp-admin-empty-state">
+          <CardBody>
+            <Flex direction="column" align="center" gap={4}>
+              <Icon icon={page} size={48} className="wp-admin-empty-state__icon" />
+              <Text>No pages found.</Text>
+              <Link 
+                to="/pages/new"
+                className="components-button is-primary"
+                style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+              >
+                <Icon icon={plus} />
+                Create your first page
+              </Link>
+            </Flex>
+          </CardBody>
+        </Card>
       )}
     </div>
   );

@@ -18,7 +18,8 @@ import {
   SlotFillProvider,
   Button,
   ToolbarGroup,
-  ToolbarButton
+  ToolbarButton,
+  TabPanel
 } from '@wordpress/components';
 import { 
   InterfaceSkeleton,
@@ -439,42 +440,53 @@ function GutenbergEditor({
                     onClick={toggleInspector}
                     isPressed={isInspectorOpen}
                   />
+                  {onExit && (
+                    <Button
+                      icon={close}
+                      label={__('Close')}
+                      onClick={onExit}
+                      className="edit-post-header__close-button"
+                    />
+                  )}
                 </div>
               </div>
             }
             sidebar={isInspectorOpen ? (
               <div className="edit-post-sidebar">
-                <div className="edit-post-sidebar__header">
-                  <div className="edit-post-sidebar__tabs">
-                    <button
-                      className={`edit-post-sidebar__tab ${activeArea === 'edit-post/document' ? 'is-active' : ''}`}
-                      onClick={() => enableComplementaryArea('core', 'edit-post/document')}
-                      type="button"
-                    >
-                      {__('Document')}
-                    </button>
-                    <button
-                      className={`edit-post-sidebar__tab ${activeArea === 'edit-post/block' ? 'is-active' : ''}`}
-                      onClick={() => enableComplementaryArea('core', 'edit-post/block')}
-                      type="button"
-                    >
-                      {__('Block')}
-                    </button>
-                  </div>
-                </div>
-                <div className="edit-post-sidebar__panel-tab-content">
-                  {activeArea === 'edit-post/document' && (
-                    <DocumentInspector 
-                      title={title}
-                      slug={slug}
-                      excerpt={excerpt}
-                      status={status}
-                      onSlugChange={onSlugChange}
-                      onExcerptChange={onExcerptChange}
-                      onStatusChange={onStatusChange}
-                    />
-                  )}
-                  {activeArea === 'edit-post/block' && <BlockInspector />}
+                <div className="edit-post-sidebar__panel-tabs">
+                  <TabPanel
+                    className="edit-post-sidebar__panel-tabs-inner"
+                    activeClass="is-active"
+                    tabs={[
+                      {
+                        name: 'document',
+                        title: __('Document'),
+                        className: 'edit-post-sidebar__panel-tab'
+                      },
+                      {
+                        name: 'block',
+                        title: __('Block'),
+                        className: 'edit-post-sidebar__panel-tab'
+                      }
+                    ]}
+                  >
+                    {(tab) => (
+                      <div className="edit-post-sidebar__panel-tab-content">
+                        {tab.name === 'document' && (
+                          <DocumentInspector 
+                            title={title}
+                            slug={slug}
+                            excerpt={excerpt}
+                            status={status}
+                            onSlugChange={onSlugChange}
+                            onExcerptChange={onExcerptChange}
+                            onStatusChange={onStatusChange}
+                          />
+                        )}
+                        {tab.name === 'block' && <BlockInspector />}
+                      </div>
+                    )}
+                  </TabPanel>
                 </div>
               </div>
             ) : null}

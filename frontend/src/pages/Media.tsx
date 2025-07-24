@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { api } from '../utils/api';
 import type { Media as MediaType } from '@shared/types';
+import { Card, CardBody, CardHeader, Button, Flex, FlexItem, Icon, __experimentalHeading as Heading, __experimentalText as Text, SearchControl, SelectControl, TextControl, Notice } from '@wordpress/components';
+import { media, upload, copy, trash, image } from '@wordpress/icons';
 
 function Media() {
   const [media, setMedia] = useState<MediaType[]>([]);
@@ -136,192 +138,207 @@ function Media() {
   }
 
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h1>Media Library</h1>
-        <div>
-          <input
-            ref={fileInputRef}
-            type="file"
-            multiple
-            accept="image/*,application/pdf,text/plain"
-            onChange={handleFileUpload}
-            style={{ display: 'none' }}
-          />
-          <button 
-            onClick={() => fileInputRef.current?.click()}
-            className="btn"
-            disabled={uploading}
-          >
-            {uploading ? 'Uploading...' : 'Upload Files'}
-          </button>
-        </div>
+    <div className="wp-admin-page">
+      <div className="wp-admin-page__header">
+        <Flex justify="space-between" align="center">
+          <Heading level={1} className="wp-admin-page__title">
+            Media Library
+          </Heading>
+          <div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              accept="image/*,application/pdf,text/plain"
+              onChange={handleFileUpload}
+              style={{ display: 'none' }}
+            />
+            <Button 
+              variant="primary"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading}
+            >
+              <Icon icon={upload} />
+              {uploading ? 'Uploading...' : 'Upload Files'}
+            </Button>
+          </div>
+        </Flex>
       </div>
 
       {error && (
-        <div className="error-message" style={{ marginBottom: '1rem' }}>
+        <Notice status="error" isDismissible={false}>
           {error}
-        </div>
+        </Notice>
       )}
 
       {success && (
-        <div className="success-message" style={{ marginBottom: '1rem' }}>
+        <Notice status="success" isDismissible={false}>
           {success}
-        </div>
+        </Notice>
       )}
 
-      <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', alignItems: 'center' }}>
-        <div>
-          <select
-            value={typeFilter}
-            onChange={(e) => setTypeFilter(e.target.value)}
-            style={{ padding: '0.5rem', border: '1px solid #ddd', borderRadius: '4px' }}
-          >
-            <option value="">All Types</option>
-            <option value="image">Images</option>
-            <option value="application">Documents</option>
-            <option value="text">Text Files</option>
-          </select>
-        </div>
-        
-        <div style={{ flex: 1 }}>
-          <input
-            type="text"
-            placeholder="Search media..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            style={{ width: '100%', padding: '0.5rem', border: '1px solid #ddd', borderRadius: '4px' }}
-          />
-        </div>
-      </div>
+      <Card className="wp-admin-filters">
+        <CardBody>
+          <Flex gap={4} align="end">
+            <FlexItem>
+              <SelectControl
+                label="Type Filter"
+                value={typeFilter}
+                options={[
+                  { label: 'All Types', value: '' },
+                  { label: 'Images', value: 'image' },
+                  { label: 'Documents', value: 'application' },
+                  { label: 'Text Files', value: 'text' }
+                ]}
+                onChange={(value) => setTypeFilter(value || '')}
+              />
+            </FlexItem>
+            <FlexItem style={{ flex: 1 }}>
+              <SearchControl
+                label="Search media"
+                value={search}
+                onChange={(value) => setSearch(value)}
+                placeholder="Search media..."
+              />
+            </FlexItem>
+          </Flex>
+        </CardBody>
+      </Card>
 
       {media.length > 0 ? (
         <>
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', 
-            gap: '1rem',
-            marginBottom: '2rem'
-          }}>
+          <div className="wp-admin-media-grid">
             {media.map(item => (
-              <div key={item.id} className="post-card">
-                {isImage(item.mimeType) ? (
-                  <img 
-                    src={item.url} 
-                    alt={item.alt || item.originalName}
-                    style={{ 
-                      width: '100%', 
-                      height: '150px', 
-                      objectFit: 'cover', 
-                      borderRadius: '4px',
-                      marginBottom: '1rem'
-                    }}
-                  />
-                ) : (
-                  <div style={{ 
-                    width: '100%', 
-                    height: '150px', 
-                    backgroundColor: '#f6f7f7', 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    justifyContent: 'center',
-                    borderRadius: '4px',
-                    marginBottom: '1rem',
-                    fontSize: '2rem'
-                  }}>
-                    📄
-                  </div>
-                )}
-                
-                <h4 style={{ marginBottom: '0.5rem', fontSize: '0.875rem' }}>
-                  {item.originalName}
-                </h4>
-                
-                <div className="post-meta" style={{ marginBottom: '1rem' }}>
-                  <span>{formatFileSize(item.size)}</span>
-                  <span> • </span>
-                  <span>{item.mimeType}</span>
-                  <span> • </span>
-                  <span>{new Date(item.createdAt).toLocaleDateString()}</span>
-                </div>
+              <Card key={item.id} className="wp-admin-media-item">
+                <CardBody>
+                  <Flex direction="column" gap={3}>
+                    <div className="wp-admin-media-item__preview">
+                      {isImage(item.mimeType) ? (
+                        <img 
+                          src={item.url} 
+                          alt={item.alt || item.originalName}
+                          style={{ 
+                            width: '100%', 
+                            height: '150px', 
+                            objectFit: 'cover', 
+                            borderRadius: '4px'
+                          }}
+                        />
+                      ) : (
+                        <div style={{ 
+                          width: '100%', 
+                          height: '150px', 
+                          backgroundColor: '#f6f7f7', 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          justifyContent: 'center',
+                          borderRadius: '4px'
+                        }}>
+                          <Icon icon={media} size={48} />
+                        </div>
+                      )}
+                    </div>
+                    
+                    <Heading level={4} className="wp-admin-media-item__title">
+                      {item.originalName}
+                    </Heading>
+                    
+                    <Flex className="wp-admin-media-item__meta" gap={2}>
+                      <Text size="small">{formatFileSize(item.size)}</Text>
+                      <Text size="small">{item.mimeType}</Text>
+                      <Text size="small">{new Date(item.createdAt).toLocaleDateString()}</Text>
+                    </Flex>
 
-                <div style={{ marginBottom: '1rem' }}>
-                  <input
-                    type="text"
-                    placeholder="Alt text"
-                    value={item.alt || ''}
-                    onChange={(e) => {
-                      const newMedia = media.map(m => 
-                        m.id === item.id ? { ...m, alt: e.target.value } : m
-                      );
-                      setMedia(newMedia);
-                    }}
-                    onBlur={(e) => handleUpdateMetadata(item.id, e.target.value, item.caption || '')}
-                    style={{ 
-                      width: '100%', 
-                      padding: '0.25rem', 
-                      fontSize: '0.75rem',
-                      marginBottom: '0.5rem'
-                    }}
-                  />
-                  <input
-                    type="text"
-                    placeholder="Caption"
-                    value={item.caption || ''}
-                    onChange={(e) => {
-                      const newMedia = media.map(m => 
-                        m.id === item.id ? { ...m, caption: e.target.value } : m
-                      );
-                      setMedia(newMedia);
-                    }}
-                    onBlur={(e) => handleUpdateMetadata(item.id, item.alt || '', e.target.value)}
-                    style={{ 
-                      width: '100%', 
-                      padding: '0.25rem', 
-                      fontSize: '0.75rem'
-                    }}
-                  />
-                </div>
+                    <div className="wp-admin-media-item__metadata">
+                      <TextControl
+                        label="Alt text"
+                        value={item.alt || ''}
+                        onChange={(value) => {
+                          const newMedia = media.map(m => 
+                            m.id === item.id ? { ...m, alt: value } : m
+                          );
+                          setMedia(newMedia);
+                        }}
+                        onBlur={(e: React.FocusEvent<HTMLInputElement>) => 
+                          handleUpdateMetadata(item.id, e.target.value, item.caption || '')}
+                        size="__unstable-large"
+                      />
+                      <TextControl
+                        label="Caption"
+                        value={item.caption || ''}
+                        onChange={(value) => {
+                          const newMedia = media.map(m => 
+                            m.id === item.id ? { ...m, caption: value } : m
+                          );
+                          setMedia(newMedia);
+                        }}
+                        onBlur={(e: React.FocusEvent<HTMLInputElement>) => 
+                          handleUpdateMetadata(item.id, item.alt || '', e.target.value)}
+                        size="__unstable-large"
+                      />
+                    </div>
 
-                <div className="post-actions">
-                  <button 
-                    onClick={() => navigator.clipboard.writeText(item.url)}
-                    className="btn btn-secondary"
-                    style={{ fontSize: '0.75rem' }}
-                  >
-                    Copy URL
-                  </button>
-                  <button 
-                    onClick={() => handleDelete(item.id)}
-                    className="btn btn-danger"
-                    style={{ fontSize: '0.75rem' }}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
+                    <Flex className="wp-admin-media-item__actions" gap={2}>
+                      <Button 
+                        variant="secondary"
+                        size="small"
+                        onClick={() => navigator.clipboard.writeText(item.url)}
+                      >
+                        <Icon icon={copy} />
+                        Copy URL
+                      </Button>
+                      <Button 
+                        variant="secondary"
+                        size="small"
+                        isDestructive
+                        onClick={() => handleDelete(item.id)}
+                      >
+                        <Icon icon={trash} />
+                        Delete
+                      </Button>
+                    </Flex>
+                  </Flex>
+                </CardBody>
+              </Card>
             ))}
           </div>
 
           {totalPages > 1 && (
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem' }}>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                <button
-                  key={page}
-                  onClick={() => fetchMedia(page)}
-                  className={`btn ${page === currentPage ? '' : 'btn-secondary'}`}
-                  disabled={loading}
-                >
-                  {page}
-                </button>
-              ))}
-            </div>
+            <Card className="wp-admin-pagination">
+              <CardBody>
+                <Flex justify="center" gap={2}>
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                    <Button
+                      key={page}
+                      variant={page === currentPage ? "primary" : "secondary"}
+                      size="small"
+                      onClick={() => fetchMedia(page)}
+                      disabled={loading}
+                    >
+                      {page}
+                    </Button>
+                  ))}
+                </Flex>
+              </CardBody>
+            </Card>
           )}
         </>
       ) : (
-        <div className="post-card">
-          <p>No media files found. Upload some files to get started!</p>
-        </div>
+        <Card className="wp-admin-empty-state">
+          <CardBody>
+            <Flex direction="column" align="center" gap={4}>
+              <Icon icon={media} size={48} className="wp-admin-empty-state__icon" />
+              <Text>No media files found.</Text>
+              <Button 
+                variant="primary"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <Icon icon={upload} />
+                Upload some files to get started
+              </Button>
+            </Flex>
+          </CardBody>
+        </Card>
       )}
     </div>
   );
