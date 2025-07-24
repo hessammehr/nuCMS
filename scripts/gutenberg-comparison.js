@@ -15,25 +15,29 @@ async function compareEditors() {
     await nuCMSPage.goto('http://localhost:3000');
     await nuCMSPage.waitForTimeout(2000);
     
-    // Login to nuCMS
-    try {
-      await nuCMSPage.fill('input[name="username"]', 'admin');
-      await nuCMSPage.fill('input[name="password"]', 'admin123');
+    // Check if login is needed and login
+    if (await nuCMSPage.$('input[type="text"]')) {
+      await nuCMSPage.fill('input[type="text"]', 'admin');
+      await nuCMSPage.fill('input[type="password"]', 'admin123');
       await nuCMSPage.click('button[type="submit"]');
       await nuCMSPage.waitForTimeout(2000);
-    } catch (e) {
-      console.log('Already logged in to nuCMS');
     }
     
     // Navigate to nuCMS post editor
-    await nuCMSPage.click('text=Posts');
-    await nuCMSPage.waitForTimeout(1000);
-    await nuCMSPage.click('text=New Post');
+    await nuCMSPage.goto('http://localhost:3000/posts/new');
     await nuCMSPage.waitForTimeout(3000);
     
-    // Set up Gutenberg benchmark
-    await gutenbergPage.goto('https://wordpress.org/gutenberg/');
-    await gutenbergPage.waitForTimeout(3000);
+    // Set up Gutenberg benchmark  
+    await gutenbergPage.goto('https://playground.wordpress.net');
+    await gutenbergPage.waitForTimeout(5000);
+    
+    // Click Edit Site button to get to Gutenberg editor
+    try {
+      await gutenbergPage.click('text=Edit Site');
+      await gutenbergPage.waitForTimeout(3000);
+    } catch (e) {
+      console.log('Edit Site button not found, proceeding...');
+    }
     
     // Position windows side by side
     await nuCMSPage.setViewportSize({ width: 1280, height: 720 });
@@ -95,8 +99,8 @@ async function compareEditors() {
     console.log('🔍 Keeping browsers open for manual inspection...');
     console.log('Press Ctrl+C to close when done inspecting');
     
-    // Wait indefinitely until user closes
-    await new Promise(() => {});
+    // Wait 10 seconds then close
+    await new Promise(resolve => setTimeout(resolve, 10000));
     
   } catch (error) {
     console.error('❌ Error during comparison:', error);
