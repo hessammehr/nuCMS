@@ -66,15 +66,13 @@ function Dashboard() {
                 {stats.posts}
               </Heading>
               <Text className="wp-stat-card__label">Posts</Text>
-              <Button 
-                variant="primary" 
-                size="small"
-                as={Link}
+              <Link 
                 to="/posts"
-                className="wp-stat-card__button"
+                className="components-button is-primary is-small wp-stat-card__button"
+                style={{ textDecoration: 'none' }}
               >
                 Manage Posts
-              </Button>
+              </Link>
             </Flex>
           </CardBody>
         </Card>
@@ -87,15 +85,13 @@ function Dashboard() {
                 {stats.pages}
               </Heading>
               <Text className="wp-stat-card__label">Pages</Text>
-              <Button 
-                variant="primary" 
-                size="small"
-                as={Link}
+              <Link 
                 to="/pages"
-                className="wp-stat-card__button"
+                className="components-button is-primary is-small wp-stat-card__button"
+                style={{ textDecoration: 'none' }}
               >
                 Manage Pages
-              </Button>
+              </Link>
             </Flex>
           </CardBody>
         </Card>
@@ -108,15 +104,13 @@ function Dashboard() {
                 {stats.media}
               </Heading>
               <Text className="wp-stat-card__label">Media Files</Text>
-              <Button 
-                variant="primary" 
-                size="small"
-                as={Link}
+              <Link 
                 to="/media"
-                className="wp-stat-card__button"
+                className="components-button is-primary is-small wp-stat-card__button"
+                style={{ textDecoration: 'none' }}
               >
                 Manage Media
-              </Button>
+              </Link>
             </Flex>
           </CardBody>
         </Card>
@@ -126,14 +120,14 @@ function Dashboard() {
         <CardHeader>
           <Flex justify="space-between" align="center">
             <Heading level={2}>Recent Posts</Heading>
-            <Button 
-              variant="primary"
-              icon={plus}
-              as={Link}
+            <Link 
               to="/posts/new"
+              className="components-button is-primary"
+              style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
             >
+              <Icon icon={plus} />
               Create New Post
-            </Button>
+            </Link>
           </Flex>
         </CardHeader>
         <CardBody>
@@ -161,15 +155,14 @@ function Dashboard() {
                         </Text>
                       </Flex>
                       <Flex className="wp-post-summary__actions">
-                        <Button 
-                          variant="secondary"
-                          size="small"
-                          icon={edit}
-                          as={Link}
+                        <Link 
                           to={`/posts/${post.id}/edit`}
+                          className="components-button is-secondary is-small"
+                          style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
                         >
+                          <Icon icon={edit} />
                           Edit
-                        </Button>
+                        </Link>
                       </Flex>
                     </Flex>
                   </CardBody>
@@ -182,14 +175,14 @@ function Dashboard() {
                 <Flex direction="column" align="center" gap={4}>
                   <Icon icon={postList} size={48} className="wp-empty-state__icon" />
                   <Text>No posts yet.</Text>
-                  <Button 
-                    variant="primary"
-                    icon={plus}
-                    as={Link}
+                  <Link 
                     to="/posts/new"
+                    className="components-button is-primary"
+                    style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
                   >
+                    <Icon icon={plus} />
                     Create your first post
-                  </Button>
+                  </Link>
                 </Flex>
               </CardBody>
             </Card>

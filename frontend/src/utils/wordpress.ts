@@ -9,7 +9,7 @@ import * as components from '@wordpress/components';
 import * as blockEditor from '@wordpress/block-editor';
 import * as i18n from '@wordpress/i18n';
 import * as hooks from '@wordpress/hooks';
-import { createMediaUpload } from './media';
+import { createMediaUpload, createMediaSelect } from './media';
 
 let isInitialized = false;
 
@@ -58,6 +58,7 @@ export function initializeWordPress() {
         hooks,
         media: {
           upload: createMediaUpload(),
+          select: createMediaSelect(),
         },
       };
     }

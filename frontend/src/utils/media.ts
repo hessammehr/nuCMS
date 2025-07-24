@@ -110,6 +110,7 @@ export function createMediaUpload() {
     onSelect: (media: any) => void;
     onError?: (error: string) => void;
   }) => {
+    console.log('🔄 createMediaUpload called with options:', options);
     const input = document.createElement('input');
     input.type = 'file';
     input.multiple = options.multiple || false;
@@ -122,7 +123,10 @@ export function createMediaUpload() {
       const files = (event.target as HTMLInputElement).files;
       if (!files || files.length === 0) return;
 
+      console.log('🔄 Files selected for upload:', files.length);
+
       const uploadPromises = Array.from(files).map(async (file) => {
+        console.log('🔄 Uploading file:', file.name, file.type, file.size);
         const result = await uploadMedia(file);
         
         if (result.success && result.data) {

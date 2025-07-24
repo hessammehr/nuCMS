@@ -160,9 +160,10 @@ function GutenbergEditor({
     enableCustomLineHeight: true,
     enableCustomSpacing: true,
     enableCustomUnits: true,
-    // Media upload settings
+    // Media upload settings - WordPress blocks expect mediaUpload to be a function
     mediaUpload: createMediaUpload(),
-    mediaLibrary: createMediaSelect(),
+    // Also set hasUploadPermissions to true
+    hasUploadPermissions: true,
     colors: [
       { name: 'Black', slug: 'black', color: '#000000' },
       { name: 'Cyan bluish gray', slug: 'cyan-bluish-gray', color: '#abb8c3' },
