@@ -1,12 +1,7 @@
 import { FastifyInstance } from 'fastify';
-import { createWriteStream } from 'fs';
-import { mkdir } from 'fs/promises';
-import path from 'path';
-import { pipeline } from 'stream/promises';
 import { prisma } from '../lib/prisma';
 import type { ApiResponse, PaginatedResponse, Media } from '../../../shared/types';
 
-const UPLOAD_DIR = path.join(__dirname, '../../uploads');
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_TYPES = [
   'image/jpeg',
@@ -19,8 +14,6 @@ const ALLOWED_TYPES = [
 ];
 
 export async function mediaRoutes(fastify: FastifyInstance) {
-  // Ensure upload directory exists
-  await mkdir(UPLOAD_DIR, { recursive: true });
 
   // Get all media
   fastify.get<{
@@ -181,23 +174,20 @@ export async function mediaRoutes(fastify: FastifyInstance) {
         });
       }
 
-      // Generate unique filename
+      // Generate unique filename for reference (no longer used for filesystem)
       const timestamp = Date.now();
-      const extension = path.extname(data.filename);
-      const filename = `${timestamp}-${Math.random().toString(36).substring(7)}${extension}`;
-      const filepath = path.join(UPLOAD_DIR, filename);
+      const extension = data.filename.includes('.') ? data.filename.split('.').pop() : '';
+      const filename = `${timestamp}-${Math.random().toString(36).substring(7)}${extension ? '.' + extension : ''}`;
 
-      // Save file
-      await require('fs').promises.writeFile(filepath, buffer);
-
-      // Save to database
+      // Save to database with file content as blob
       const media = await prisma.media.create({
         data: {
           filename,
           originalName: data.filename,
           mimeType: data.mimetype,
           size: buffer.length,
-          url: `/uploads/${filename}`,
+          url: `/api/media/file/${filename}`, // Changed to point to database-served content
+          data: buffer, // Store file content as binary data
           authorId: userId
         },
         include: {
@@ -319,14 +309,7 @@ export async function mediaRoutes(fastify: FastifyInstance) {
         });
       }
 
-      // Delete file from filesystem
-      try {
-        await require('fs').promises.unlink(path.join(UPLOAD_DIR, existingMedia.filename));
-      } catch (error) {
-        console.warn('Failed to delete file:', error);
-      }
-
-      // Delete from database
+      // Delete from database (file content is stored in database)
       await prisma.media.delete({
         where: { id }
       });
@@ -335,6 +318,47 @@ export async function mediaRoutes(fastify: FastifyInstance) {
         success: true,
         data: { id }
       };
+    } catch (error) {
+      fastify.log.error(error);
+      return reply.status(500).send({
+        success: false,
+        error: 'Internal server error'
+      });
+    }
+  });
+
+  // Serve media files from database
+  fastify.get<{
+    Params: { filename: string };
+  }>('/file/:filename', async (request, reply) => {
+    try {
+      const { filename } = request.params;
+      
+      const media = await prisma.media.findFirst({
+        where: { filename },
+        select: {
+          data: true,
+          mimeType: true,
+          originalName: true,
+          size: true
+        }
+      });
+
+      if (!media) {
+        return reply.status(404).send({
+          success: false,
+          error: 'File not found'
+        });
+      }
+
+      // Set appropriate headers
+      reply.header('Content-Type', media.mimeType);
+      reply.header('Content-Length', media.size);
+      reply.header('Content-Disposition', `inline; filename="${media.originalName}"`);
+      reply.header('Cache-Control', 'public, max-age=31536000'); // Cache for 1 year
+
+      // Send the binary data
+      return reply.send(media.data);
     } catch (error) {
       fastify.log.error(error);
       return reply.status(500).send({

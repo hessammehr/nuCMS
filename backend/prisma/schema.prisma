@@ -65,6 +65,7 @@ model Media {
   mimeType  String
   size      Int
   url       String
+  data      Bytes    // File content stored as binary data
   alt       String?
   caption   String?
   createdAt DateTime @default(now())
