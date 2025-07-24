@@ -46,30 +46,58 @@ export function initializeWordPress() {
       }
     );
 
-    // Add filter to ensure media upload function is properly configured
+    // Add filter to add Media Library button to image block
     addFilter(
       'editor.BlockEdit',
-      'nucms/fix-media-upload',
+      'nucms/add-media-library-button',
       (BlockEdit: any) => {
         return (props: any) => {
-          // For image blocks, ensure media upload is available and add media library button
+          // For image blocks, add media library functionality
           if (props.name === 'core/image') {
-            console.log('🎨 Rendering image block with enhanced media support');
+            console.log('🎨 Rendering image block with Media Library button');
             
-            // Enhance props with media library support
-            const enhancedProps = {
-              ...props,
-              attributes: {
-                ...props.attributes,
-              },
-              // Add media upload and select capabilities
-              mediaUpload: createMediaUpload(),
-              mediaSelect: createMediaSelect(),
-              // Ensure hasUploadPermissions is true to show media buttons
-              hasUploadPermissions: true,
-            };
+            // Create the original block element
+            const originalElement = React.createElement(BlockEdit, props);
             
-            return React.createElement(BlockEdit, enhancedProps);
+            // If the image block is in placeholder state (no image selected), add media library button
+            if (!props.attributes.id && !props.attributes.url) {
+              console.log('🖼️ Image block in placeholder state, adding Media Library option');
+              
+              // Wrap the original element and add media library functionality
+              return React.createElement('div', { className: 'nucms-image-block-wrapper' }, [
+                originalElement,
+                React.createElement('div', { 
+                  key: 'media-library-wrapper',
+                  className: 'nucms-media-library-wrapper',
+                  style: { marginTop: '10px', textAlign: 'center' }
+                }, [
+                  React.createElement('button', {
+                    key: 'media-library-btn',
+                    className: 'components-button is-secondary',
+                    onClick: () => {
+                      console.log('📚 Media Library button clicked');
+                      const mediaSelect = createMediaSelect();
+                      mediaSelect({
+                        allowedTypes: ['image/*'],
+                        multiple: false,
+                        onSelect: (media: any) => {
+                          console.log('📚 Media selected from library:', media);
+                          // Update the block attributes with selected media
+                          props.setAttributes({
+                            id: media.id,
+                            url: media.url,
+                            alt: media.alt || '',
+                            caption: media.caption || '',
+                          });
+                        }
+                      });
+                    }
+                  }, 'Media Library')
+                ])
+              ]);
+            }
+            
+            return originalElement;
           }
           return React.createElement(BlockEdit, props);
         };
