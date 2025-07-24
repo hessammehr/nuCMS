@@ -502,6 +502,7 @@ function GutenbergEditor({
                       <EditorStyles styles={[]} />
                       <BlockSelectionClearer className="block-editor-writing-flow">
                         <BlockEditorKeyboardShortcuts />
+                        <BlockToolbar hideDragHandle />
                         <WritingFlow>
                           <ObserveTyping>
                             <BlockList />
