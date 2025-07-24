@@ -516,7 +516,6 @@ function GutenbergEditor({
             footer={<BlockBreadcrumb />}
           />
           <BlockEditorKeyboardShortcuts.Register />
-          <BlockToolbar />
           <CommandMenu />
           <Popover.Slot />
         </BlockEditorProvider>
