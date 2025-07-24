@@ -22,13 +22,27 @@
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 }
 
-/* Fix block contextual toolbar z-index issues */
+/* Fix block contextual toolbar z-index issues - use pointer-events to prevent interference */
 .block-editor-block-contextual-toolbar {
-  z-index: 99 !important;
+  z-index: 10 !important;
+  pointer-events: none !important;
 }
 
 .components-accessible-toolbar.block-editor-block-contextual-toolbar {
-  z-index: 99 !important;
+  z-index: 10 !important;
+  pointer-events: none !important;
+}
+
+/* Re-enable pointer events for the toolbar buttons themselves */
+.block-editor-block-contextual-toolbar .components-button,
+.block-editor-block-contextual-toolbar .components-dropdown-menu__toggle {
+  pointer-events: auto !important;
+  z-index: 10 !important;
+}
+
+/* Alternative: Hide contextual toolbar when it might interfere with header */
+.edit-post-layout:not(.is-mode-text) .block-editor-block-contextual-toolbar {
+  top: 70px !important; /* Move below header toolbar */
 }
 
 /* Ensure header elements are properly layered */
