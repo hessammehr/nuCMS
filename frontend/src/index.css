@@ -18,8 +18,28 @@
   width: 100vw;
   height: 100vh;
   background: #fff;
-  z-index: 9999;
+  z-index: 999999; /* Higher than admin bar to prevent click interference */
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+/* Fix block contextual toolbar z-index issues */
+.block-editor-block-contextual-toolbar {
+  z-index: 99 !important;
+}
+
+.components-accessible-toolbar.block-editor-block-contextual-toolbar {
+  z-index: 99 !important;
+}
+
+/* Ensure header elements are properly layered */
+.edit-post-header__toolbar .components-button {
+  z-index: 100 !important;
+  position: relative !important;
+}
+
+/* Hide admin header when fullscreen editor is active */
+body:has(.gutenberg-fullscreen-editor) .wp-admin-bar {
+  display: none;
 }
 
 .fullscreen-editor-wrapper {
