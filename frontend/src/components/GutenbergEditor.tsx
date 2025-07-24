@@ -32,8 +32,6 @@ import { CommandMenu, useCommand } from '@wordpress/commands';
 import DocumentInspector from './DocumentInspector';
 import { MediaBrowser } from './MediaBrowser';
 import { createMediaUpload, createMediaSelect, MediaItem } from '../utils/media';
-import { createFixedMediaUpload } from '../utils/media-upload-fix';
-import { createSimpleMediaUpload } from '../utils/media-upload-simple';
 import { createFinalMediaUpload } from '../utils/media-upload-final';
 import './MediaBrowser.css';
 
