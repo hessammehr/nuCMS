@@ -21,6 +21,7 @@ Analyze the current repository state and make incremental progress on the nuCMS 
 - Add missing functionality or features
 - Test admin interface and editor functionality using playwright to ensure everything works correctly
 - Avoid unnecessary churn or busy work, focus on the main goal and making meaningful progress
+- Clean up custom elements/components/styles and replace with Gutenberg ones while preserving appearance and functionality
 - Don't get carried away with bikeshedding, code formatting, CI/CD, fancy types, anything enterprisy or other distractions
 - Fix any bugs or issues found in the codebase
 - Improve code quality and maintainability
