@@ -76,6 +76,27 @@ export function initializeWordPress() {
         media: {
           upload: createMediaUpload(),
           select: createMediaSelect(),
+          // Add media library functionality
+          view: {
+            MediaFrame: {
+              Select: function() {
+                console.log('📚 WordPress MediaFrame.Select called');
+                return {
+                  open: () => {
+                    console.log('📚 MediaFrame.Select.open called');
+                    const mediaSelect = createMediaSelect();
+                    mediaSelect({
+                      allowedTypes: ['image/*'],
+                      multiple: false,
+                      onSelect: (media) => {
+                        console.log('📚 Media selected via MediaFrame:', media);
+                      }
+                    });
+                  }
+                };
+              }
+            }
+          }
         },
       };
     }

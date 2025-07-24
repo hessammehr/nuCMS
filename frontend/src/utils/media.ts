@@ -215,9 +215,18 @@ export function createMediaSelect() {
     onSelect: (media: any) => void;
     onClose?: () => void;
   }) => {
-    // For now, we'll use the upload dialog
-    // In the future, this could open a media library modal
-    const mediaUpload = createMediaUpload();
-    mediaUpload(options);
+    console.log('🔄 createMediaSelect called with options:', options);
+    
+    // Dispatch a custom event to open the media browser
+    const event = new CustomEvent('nuCMS:openMediaBrowser', {
+      detail: {
+        allowedTypes: options.allowedTypes,
+        multiple: options.multiple,
+        onSelect: options.onSelect,
+        onClose: options.onClose,
+      }
+    });
+    
+    window.dispatchEvent(event);
   };
 }

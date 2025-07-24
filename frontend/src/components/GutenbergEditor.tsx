@@ -30,7 +30,9 @@ import { __ } from '@wordpress/i18n';
 import { cog, close, undo as undoIcon, redo as redoIcon, plus, listView } from '@wordpress/icons';
 import { CommandMenu, useCommand } from '@wordpress/commands';
 import DocumentInspector from './DocumentInspector';
-import { createMediaUpload, createMediaSelect } from '../utils/media';
+import { MediaBrowser } from './MediaBrowser';
+import { createMediaUpload, createMediaSelect, MediaItem } from '../utils/media';
+import './MediaBrowser.css';
 
 interface GutenbergEditorProps {
   content: string;
@@ -63,6 +65,15 @@ function GutenbergEditor({
   onStatusChange,
   onExit
 }: GutenbergEditorProps) {
+  // Media browser state
+  const [isMediaBrowserOpen, setIsMediaBrowserOpen] = useState(false);
+  const [mediaBrowserOptions, setMediaBrowserOptions] = useState<{
+    allowedTypes?: string[];
+    multiple?: boolean;
+    onSelect: (media: MediaItem) => void;
+    onClose?: () => void;
+  } | null>(null);
+
   const [blocks, setBlocks] = useState(() => {
     try {
       if (content) {
@@ -104,6 +115,21 @@ function GutenbergEditor({
       enableComplementaryArea('core', 'edit-post/document');
     }
   }, [enableComplementaryArea, activeArea]);
+
+  // Set up media browser event listener
+  useEffect(() => {
+    const handleOpenMediaBrowser = (event: CustomEvent) => {
+      console.log('📚 Media browser event received:', event.detail);
+      setMediaBrowserOptions(event.detail);
+      setIsMediaBrowserOpen(true);
+    };
+
+    window.addEventListener('nuCMS:openMediaBrowser', handleOpenMediaBrowser as EventListener);
+    
+    return () => {
+      window.removeEventListener('nuCMS:openMediaBrowser', handleOpenMediaBrowser as EventListener);
+    };
+  }, []);
 
   // Ensure the block editor store is properly initialized with our blocks
   useEffect(() => {
@@ -162,8 +188,15 @@ function GutenbergEditor({
     enableCustomUnits: true,
     // Media upload settings - WordPress blocks expect mediaUpload to be a function
     mediaUpload: createMediaUpload(),
+    // Media select (library browser) callback  
+    mediaSelect: createMediaSelect(),
     // Also set hasUploadPermissions to true
     hasUploadPermissions: true,
+    // Enable media library features
+    __experimentalEnableFullSiteEditing: false,
+    __experimentalCanUserUseUnfilteredHTML: false,
+    // Media library support
+    canUserUploadFiles: true,
     // Add error boundary settings
     __experimentalBlockManagement: false,
     __experimentalBlockDirectory: false,
@@ -274,6 +307,44 @@ function GutenbergEditor({
     } catch (error) {
       console.error('Failed to serialize blocks:', error);
     }
+  };
+
+  // Media browser handlers
+  const handleMediaBrowserClose = () => {
+    setIsMediaBrowserOpen(false);
+    if (mediaBrowserOptions?.onClose) {
+      mediaBrowserOptions.onClose();
+    }
+    setMediaBrowserOptions(null);
+  };
+
+  const handleMediaBrowserSelect = (media: MediaItem) => {
+    console.log('📚 Media selected:', media);
+    if (mediaBrowserOptions?.onSelect) {
+      // Transform our MediaItem to match WordPress media format
+      const wpMedia = {
+        id: media.id,
+        url: media.url,
+        alt: media.alt || '',
+        caption: media.caption || '',
+        title: media.originalName,
+        filename: media.filename,
+        mime: media.mimeType,
+        type: media.mimeType.startsWith('image/') ? 'image' : 'file',
+        subtype: media.mimeType.split('/')[1],
+        sizes: media.mimeType.startsWith('image/') ? {
+          full: {
+            url: media.url,
+            width: 0, // We don't have dimensions yet
+            height: 0,
+          }
+        } : undefined,
+      };
+      
+      mediaBrowserOptions.onSelect(wpMedia);
+    }
+    setIsMediaBrowserOpen(false);
+    setMediaBrowserOptions(null);
   };
 
   // Debug logging to help understand the data flow
@@ -448,6 +519,17 @@ function GutenbergEditor({
           <CommandMenu />
           <Popover.Slot />
         </BlockEditorProvider>
+        
+        {/* Media Browser Modal */}
+        {isMediaBrowserOpen && mediaBrowserOptions && (
+          <MediaBrowser
+            isOpen={isMediaBrowserOpen}
+            onClose={handleMediaBrowserClose}
+            onSelect={handleMediaBrowserSelect}
+            allowedTypes={mediaBrowserOptions.allowedTypes}
+            multiple={mediaBrowserOptions.multiple}
+          />
+        )}
       </SlotFillProvider>
     </div>
   );
