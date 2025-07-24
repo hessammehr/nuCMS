@@ -125,10 +125,9 @@ export function createMediaUpload() {
       
       console.log('🔧 Input element created:', input);
 
-      input.onchange = async (event) => {
-        console.log('📄 Input onchange event triggered');
+      const handleFileSelection = async (files: FileList | null) => {
+        console.log('📄 File selection handler triggered');
         try {
-          const files = (event.target as HTMLInputElement).files;
           console.log('📄 Files from input:', files, files?.length);
           if (!files || files.length === 0) {
             console.log('❌ No files selected or files is null');
@@ -189,11 +188,46 @@ export function createMediaUpload() {
         }
       };
 
+      input.onchange = async (event) => {
+        console.log('📄 Input onchange event triggered');
+        const files = (event.target as HTMLInputElement).files;
+        await handleFileSelection(files);
+      };
+
+      // Also listen for input event as a fallback
+      input.oninput = async (event) => {
+        console.log('📄 Input oninput event triggered');
+        const files = (event.target as HTMLInputElement).files;
+        await handleFileSelection(files);
+      };
+
+      // Add mutation observer to detect programmatic file changes
+      let checkInterval: NodeJS.Timeout;
+      const startPolling = () => {
+        checkInterval = setInterval(() => {
+          if (input.files && input.files.length > 0) {
+            console.log('📄 Files detected via polling:', input.files.length);
+            clearInterval(checkInterval);
+            handleFileSelection(input.files);
+          }
+        }, 100);
+        
+        // Stop polling after 10 seconds
+        setTimeout(() => {
+          if (checkInterval) {
+            clearInterval(checkInterval);
+          }
+        }, 10000);
+      };
+
       // Use a timeout to avoid potential timing issues
       setTimeout(() => {
         console.log('🖱️ Attempting to click input element');
         input.click();
         console.log('🖱️ Input click completed');
+        
+        // Start polling for file changes
+        startPolling();
       }, 100);
       
     } catch (error) {
